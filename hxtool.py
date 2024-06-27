@@ -715,8 +715,8 @@ if __name__ == "__main__":
 	# TODO: This should really be after app.run, but you cannot run code after app.run, so we'll leave this here for now.
 	logger.info("Application is running. Please point your browser to http{0}://{1}:{2}{3}. Press Ctrl+C/Ctrl+Break to exit.".format(
 																							's' if hxtool_global.hxtool_config['network']['ssl'] == 'enabled' else '',
-																							hxtool_global.hxtool_config['network']['listen_address'], 
-																							hxtool_global.hxtool_config['network']['port'], 
+																							hxtool_global.hxtool_config['network']['listen_address'],
+																							hxtool_global.hxtool_config['network']['port'],
 																							hxtool_global.hxtool_config['network']['url_prefix']))
 	if hxtool_global.hxtool_config['network']['ssl'] == "enabled":
 		app.config['SESSION_COOKIE_SECURE'] = True
