@@ -28,7 +28,6 @@ from hx_openioc import openioc_to_hxioc
 ht_api = Blueprint('ht_api', __name__, template_folder='templates')
 logger = hxtool_logging.getLogger(__name__)
 
-
 ###################################
 # Common User interface endpoints #
 ###################################
@@ -66,7 +65,6 @@ def hxtool_api_version_get(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restGetControllerVersion()
 	(r, rcode) = create_api_response(ret, response_code, response_data)
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 #################
 # Audit Manager #
@@ -129,7 +127,6 @@ def hxtool_api_auditmanager_remove(hx_api_object):
 		rmessage = "Audit action remove failed"
 
 	return(app.response_class(response=json.dumps(rmessage), status=rcode, mimetype='application/json'))
-
 
 #################
 # Audit viewer  #
@@ -200,7 +197,6 @@ def hxtool_api_auditviewer_query(hx_api_object):
 
 	return(app.response_class(response=json.dumps(response), status=200, mimetype='application/json'))
 
-
 ################
 # Acquisitions #
 ################
@@ -261,8 +257,6 @@ def hxtool_api_acquisition_new(hx_api_object):
 	app.logger.info(format_activity_log(msg="acquisition", action="new", host=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
 
-
-
 @ht_api.route('/api/v{0}/acquisition/file'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_acquisition_file(hx_api_object):
@@ -304,7 +298,6 @@ def hxtool_api_acquisition_triage(hx_api_object):
 	(r, rcode) = create_api_response(ret, response_code, response_data)
 	app.logger.info(format_activity_log(msg="triage acquisition", action="new", host=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 #####################
 # Enterprise Search #
@@ -433,7 +426,6 @@ def hxtool_api_enterprise_search_new_file(hx_api_object):
 	app.logger.info(format_activity_log(msg="enterprise search", action="new", user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
 
-
 #########
 # Hosts #
 #########
@@ -490,7 +482,6 @@ def hxtool_api_hosts_remove(hx_api_object):
 	app.logger.info(format_activity_log(msg="host action", action="remove", id=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
 
-
 ###################
 # Manage OpenIOCs #
 ###################
@@ -533,7 +524,6 @@ def hxtool_api_openioc_download(hx_api_object):
 	app.logger.info(format_activity_log(msg="openioc action", action="download", name=myiocData['iocname'], user=session['ht_user'], controller=session['hx_ip']))
 	return send_file(buffer, download_name=myiocData['iocname'] + ".ioc", as_attachment=True)
 
-
 ##########
 # Alerts #
 ##########
@@ -569,7 +559,6 @@ def hxtool_api_alerts_get(hx_api_object):
 		(r, rcode) = create_api_response(ret, response_code, response_data)
 		return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))			
 
-
 #####################
 # Alert Annotations #
 #####################
@@ -588,11 +577,9 @@ def hxtool_api_annotation_alert_view(hx_api_object):
 	alertAnnotations = hxtool_global.hxtool_db.alertGet(session['ht_profileid'], request.args.get('id'))
 	return(app.response_class(response=json.dumps(alertAnnotations), status=200, mimetype='application/json'))
 
-
 #############
 # Scheduler #
 #############
-
 @ht_api.route('/api/v{0}/scheduler/remove'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_scheduler_remove(hx_api_object):
@@ -639,11 +626,9 @@ def scheduler_tasks(hx_api_object):
 				})
 	return(app.response_class(response=json.dumps(mytasks), status=200, mimetype='application/json'))
 
-
 ################
 # Task profile #
 ################
-
 @ht_api.route('/api/v{0}/taskprofile/remove'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_taskprofile_remove(hx_api_object):
@@ -660,7 +645,6 @@ def hxtool_api_taskprofile_new(hx_api_object):
 	(r, rcode) = create_api_response(ret=True)
 	app.logger.info(format_activity_log(msg="task profile action", action="new", name=mydata['name'], user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 ###############
 # Host Groups #
@@ -691,11 +675,9 @@ def hxtool_api_hostgroup_id(hx_api_object, hostgroup_id):
 		logger.info(format_activity_log(msg="host group action", action="remove", hostgroup_id=hostgroup_id, user=session['ht_user'], controller=session['hx_ip']))
 		return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
 
-
 ####################
 # Bulk Acquisition #
 ####################
-
 # Remove
 @ht_api.route('/api/v{0}/acquisition/bulk/remove'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -759,7 +741,6 @@ def hxtool_api_acquisition_bulk_download(hx_api_object):
 		app.logger.warn(format_activity_log(msg="bulk acquisition action", action="download", error="No host entries were returned for bulk acquisition", id=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
-
 
 # New bulk acquisiton from scriptstore
 @ht_api.route('/api/v{0}/acquisition/bulk/new/db'.format(HXTOOL_API_VERSION), methods=['GET'])
@@ -827,7 +808,6 @@ def hxtool_api_acquisition_bulk_new_file(hx_api_object):
 
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
 
-
 ###########
 # Scripts #
 ###########
@@ -873,8 +853,6 @@ def hxtool_api_scripts_download(hx_api_object):
 
 	app.logger.info(format_activity_log(msg="script action", action="download", id=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 	return send_file(buffer, download_name=myscriptData['scriptname'] + ".json", as_attachment=True)
-
-
 
 ########################
 # IOC Streaming API    #
@@ -1082,7 +1060,6 @@ def hxtool_api_streaming_indicators_export(hx_api_object):
 		return send_file(buffer, download_name=iocfname, as_attachment=True)
 	return('Nothing selected to export', 500)
 
-
 @ht_api.route('/api/v{0}/streaming_indicators/import'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
 def hxtool_api_streaming_indicators_import(hx_api_object):
@@ -1185,7 +1162,6 @@ def hxtool_handle_streaming_indicator_import(hx_api_object, iocs):
 					app.logger.info(format_activity_log(msg="streaming rule action", reason="unable to import indicator", action="import", name=ioc['name'], user=session['ht_user'], controller=session['hx_ip']))
 	return					
 
-
 ########################
 # Indicator categories #
 ########################
@@ -1228,7 +1204,6 @@ def hxtool_api_indicator_category_new(hx_api_object):
 	app.logger.info(format_activity_log(msg="rule category action", action="new", name=request.args.get('name'), user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
 
-
 ##############
 # Conditions #
 ##############
@@ -1238,7 +1213,6 @@ def hxtool_api_conditions_get(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restGetConditionDetails(request.args.get('id'))
 	(r, rcode) = create_api_response(ret, response_code, response_data)
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 ###################
 # Indicator queue #
@@ -1282,7 +1256,6 @@ def hxtool_api_indicatorqueue_import(hx_api_object):
 		
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
 
-
 ##############
 # Indicators #
 ##############
@@ -1293,7 +1266,6 @@ def hxtool_api_indicators_remove(hx_api_object):
 	(r, rcode) = create_api_response(ret, response_code, response_data)
 	app.logger.info(format_activity_log(msg="rule action", action="remove", name=request.args.get('url'), user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/indicators/get/conditions'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -1306,7 +1278,6 @@ def hxtool_api_indicators_get_conditions(hx_api_object):
 
 	(r, rcode) = create_api_response(ret, response_code, myconditions)
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/indicators/export'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
@@ -1414,7 +1385,6 @@ def hxtool_api_indicators_import(hx_api_object):
 
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/indicators/new'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
 def hxtool_api_indicators_new(hx_api_object):
@@ -1499,7 +1469,6 @@ def hxtool_api_indicators_new(hx_api_object):
 		app.logger.warn(format_activity_log(msg="rule action", action="new", reason="failed to create indicator", user=session['ht_user'], controller=session['hx_ip']))
 		return ('failed to create indicator', 500)
 
-
 @ht_api.route('/api/v{0}/indicators/edit'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
 def hxtool_api_indicators_edit(hx_api_object):
@@ -1549,11 +1518,9 @@ def hxtool_api_indicators_edit(hx_api_object):
 		# Failed to create indicator
 		return('failed to create indicator',500)
 
-
 #################################
 # Custom configuration channels #
 #################################
-
 @ht_api.route('/api/v{0}/ccc/new'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
 def hxtool_api_ccc_new(hx_api_object):
@@ -1586,7 +1553,6 @@ def hxtool_api_ccc_get(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restGetConfigChannelConfiguration(request.args.get('id'))
 	(r, rcode) = create_api_response(ret, response_code, response_data)
 	return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
-
 
 ############
 # Stacking #
@@ -1648,12 +1614,9 @@ def hxtool_api_stacking_stop(hx_api_object):
 		app.logger.info(format_activity_log(msg="stacking", action="stop", id=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 		return(app.response_class(response=json.dumps(r), status=rcode, mimetype='application/json'))
 
-
-
 ##########################
 # Multi-file acquisition #
 ##########################
-
 @ht_api.route('/api/v{0}/acquisition/multi/file_listing/new'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
 def hxtool_api_acquisition_multi_file_listing(hx_api_object):
@@ -1719,7 +1682,6 @@ def hxtool_api_acquisition_multi_file_listing(hx_api_object):
 	app.logger.info(format_activity_log(msg="multi-file listing acquisition", action="new", hostset_id=hostset, user=session['ht_user'], controller=session['hx_ip']))
 	return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/acquisition/multi/file_listing/stop'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_acquisition_multi_file_listing_stop(hx_api_object):
@@ -1736,7 +1698,6 @@ def hxtool_api_acquisition_multi_file_listing_stop(hx_api_object):
 			return(app.response_class(response=json.dumps(response_data), status=response_code, mimetype='application/json'))
 	return(app.response_class(response=json.dumps("File listing job not found."), status=404, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/acquisition/multi/file_listing/remove'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_acquisition_multi_file_listing_remove(hx_api_object):
@@ -1749,7 +1710,6 @@ def hxtool_api_acquisition_multi_file_listing_remove(hx_api_object):
 		hxtool_global.hxtool_db.fileListingDelete(file_listing_job.doc_id)
 		app.logger.info(format_activity_log(msg="multi-file listing acquisition", action="remove", id=request.args.get('id'), user=session['ht_user'], controller=session['hx_ip']))
 		return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/acquisition/multi/mf/stop'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -1783,7 +1743,6 @@ def hxtool_api_acquisition_multi_mf_remove(hx_api_object):
 			hxtool_global.hxtool_db.multiFileDelete(mf_job.doc_id)
 			app.logger.info(format_activity_log(msg="multi-file acquisition", action="remove", id=mf_job.doc_id, user=session['ht_user'], controller=session['hx_ip']))
 			return(app.response_class(response=json.dumps("OK"), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/acquisition/multi/mf/new'.format(HXTOOL_API_VERSION), methods=['POST'])
 @valid_session_required
@@ -1861,7 +1820,6 @@ def hxtool_api_acquisition_multi_mf_new(hx_api_object):
 ##############
 # Datatables #
 ##############
-
 @ht_api.route('/api/v{0}/datatable_multi_filelisting'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_multi_filelisting(hx_api_object):
@@ -1891,7 +1849,6 @@ def datatable_multi_filelisting(hx_api_object):
 		job['DT_RowId'] = job['id']
 		data_rows.append(job)
 	return(app.response_class(response=json.dumps({'data': data_rows}), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_multi_multifile'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -1948,8 +1905,6 @@ def datatable_stacking(hx_api_object):
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
 
-
-
 @ht_api.route('/api/v{0}/datatable_ccc'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_ccc(hx_api_object):
@@ -1975,7 +1930,6 @@ def datatable_ccc(hx_api_object):
 				})
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable/agentstatus/csv'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2016,7 +1970,6 @@ def datatable_agentstatus_csv(hx_api_object):
 
 	return send_file(mem, download_name="agent_statistics_" + myField + ".csv", as_attachment=True)
 
-
 @ht_api.route('/api/v{0}/datatable/agentstatus'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_agentstatus(hx_api_object):
@@ -2044,8 +1997,6 @@ def datatable_agentstatus(hx_api_object):
 				})
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
-
-
 
 @ht_api.route('/api/v{0}/datatable/avcontent'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2076,7 +2027,6 @@ def datatable_avcontent_detail(hx_api_object):
 	del hresponse_data
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable/avengine'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2160,7 +2110,6 @@ def datatable_categories(hx_api_object):
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/datatable_indicators'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_indicators(hx_api_object):
@@ -2187,7 +2136,6 @@ def datatable_indicators(hx_api_object):
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/datatable_hosts'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_hosts(hx_api_object):
@@ -2210,7 +2158,6 @@ def datatable_hosts(hx_api_object):
 				})
 
 	return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_hosts_with_alerts'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2266,7 +2213,6 @@ def datatable_alerts_host(hx_api_object):
 
 		return(app.response_class(response=json.dumps(myalerts), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/datatable_alerts'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_alerts(hx_api_object):
@@ -2316,7 +2262,6 @@ def datatable_alerts(hx_api_object):
 			return('', 500)
 
 		return(app.response_class(response=json.dumps(myalerts), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_alerts_full'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2512,7 +2457,6 @@ def datatable_alerts_full(hx_api_object):
 
 		return(app.response_class(response=json.dumps(myalerts), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/datatable_scripts'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_scripts(hx_api_object):
@@ -2534,7 +2478,6 @@ def datatable_taskprofiles(hx_api_object):
 		mytaskprofiles = hxtool_global.hxtool_db.taskProfileList()
 		# TODO: filter passwords and keys in task params
 		return(app.response_class(response=json.dumps(mytaskprofiles), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_acqs'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2582,7 +2525,6 @@ def datatable_acqs(hx_api_object):
 								"action": acq['acq']['_id']
 							})
 				return(app.response_class(response=json.dumps(myacqs), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_acqs_host'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2673,7 +2615,6 @@ def datatable_indicatorqueue(hx_api_object):
 			"action" : indicator['id'],
 			})
 	return(app.response_class(response=json.dumps(myrules), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/datatable_bulk'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2780,8 +2721,6 @@ def datatable_bulk(hx_api_object):
 	else:
 		return('HX API Call failed',500)
 
-
-
 @ht_api.route('/api/v{0}/datatable_es_result_types'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def datatable_es_result_types(hx_api_object):
@@ -2808,7 +2747,6 @@ def datatable_es_result_types(hx_api_object):
 			return('HX API Call failed', 500)
 	else:
 		return('Missing search id', 404)
-
 
 @ht_api.route('/api/v{0}/datatable_es_result'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2837,11 +2775,9 @@ def datatable_es_result(hx_api_object):
 	else:
 		return('Missing search id or type', 404)
 
-
 ###########
 # ChartJS #
 ###########
-
 @ht_api.route('/api/v{0}/chartjs_agentstatus'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def chartjs_agentstatus(hx_api_object):
@@ -2878,8 +2814,6 @@ def chartjs_agentstatus(hx_api_object):
 			})
 
 	return(app.response_class(response=json.dumps(rData), status=200, mimetype='application/json'))
-
-
 
 @ht_api.route('/api/v{0}/chartjs_malwarecontent'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -2938,7 +2872,6 @@ def chartjs_malwarecontent(hx_api_object):
 
 		return(app.response_class(response=json.dumps(myData), status=200, mimetype='application/json'))
 
-
 @ht_api.route('/api/v{0}/chartjs_malwareengine'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def chartjs_malwareengine(hx_api_object):
@@ -2993,7 +2926,6 @@ def chartjs_malwareengine(hx_api_object):
 			})
 
 		return(app.response_class(response=json.dumps(myData), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/chartjs_malwarestatus'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -3097,7 +3029,6 @@ def hxtool_api_enterprise_search_chartjs_searches(hx_api_object):
 	else:
 		return('HX API Call failed',500)
 
-
 @ht_api.route('/api/v{0}/acquisition/bulk/chartjs_acquisitions'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def hxtool_api_acquisition_bulk_chartjs_acquisitions(hx_api_object):
@@ -3141,7 +3072,6 @@ def hxtool_api_acquisition_bulk_chartjs_acquisitions(hx_api_object):
 		return(app.response_class(response=json.dumps(myr), status=rcode, mimetype='application/json'))
 	else:
 		return('HX API Call failed',500)
-
 
 @ht_api.route('/api/v{0}/chartjs_hosts_initial_agent_checkin'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -3188,7 +3118,6 @@ def chartjs_hosts_initial_agent_checkin(hx_api_object):
 		return('', 500)
 
 	return(app.response_class(response=json.dumps(myhosts), status=200, mimetype='application/json'))
-
 
 @ht_api.route('/api/v{0}/chartjs_events_timeline'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -3243,7 +3172,6 @@ def chartjs_events_timeline(hx_api_object):
 	else:
 		return('',500)
 
-
 @ht_api.route('/api/v{0}/chartjs_host_alert_timeline'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def chartjs_host_alert_timeline(hx_api_object):
@@ -3277,7 +3205,6 @@ def chartjs_host_alert_timeline(hx_api_object):
 		return(app.response_class(response=json.dumps(mydates), status=200, mimetype='application/json'))
 	else:
 		return('',500)
-
 
 @ht_api.route('/api/v{0}/chartjs_events_distribution'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -3313,7 +3240,6 @@ def chartjs_events_distribution(hx_api_object):
 		return(app.response_class(response=json.dumps(mydata), status=200, mimetype='application/json'))
 	else:
 		return('',500)
-
 
 @ht_api.route('/api/v{0}/chartjs_inactive_hosts_per_hostset'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
@@ -3362,11 +3288,9 @@ def chartjs_inactive_hosts_per_hostset(hx_api_object):
 	else:
 		return('',500)
 
-
 ######################
 # Profile Management #
 ######################
-
 @ht_api.route('/api/v{0}/profile'.format(HXTOOL_API_VERSION), methods=['GET', 'PUT'])
 def profile():
 	if request.method == 'GET':
@@ -3403,11 +3327,9 @@ def profile_by_id(profile_id):
 		else:
 			return make_response_by_code(404)
 
-
 ####################
 # Stacking Results #
 ####################
-
 @ht_api.route('/api/v{0}/stacking/results/<stack_job_eid>'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def stack_job_results(hx_api_object, stack_job_eid):
@@ -3421,7 +3343,6 @@ def stack_job_results(hx_api_object, stack_job_eid):
 		
 	ht_data_model = hxtool_data_models(stack_job['stack_type'])
 	return ht_data_model.stack_data(stack_job['results'])	
-
 
 #####################
 # Cache API calls ###
@@ -3452,11 +3373,9 @@ def cache_statistics(hx_api_object):
 	else:
 		return(app.response_class(response=json.dumps("DISABLED"), status=200, mimetype='application/json'))
 
-
 #######################
 ### X15 INTEGRATION ###
 #######################
-
 @ht_api.route('/api/v{0}/analysis/data'.format(HXTOOL_API_VERSION), methods=['GET'])
 @valid_session_required
 def x15_analysis_data(hx_api_object):
@@ -3514,8 +3433,6 @@ def x15_analysis_auditdata(hx_api_object):
 		return make_response_by_code(400)
 
 #######################
-
-
 def create_api_response(ret = True, response_code = 200, response_data = False):
 
 	api_response = {}
