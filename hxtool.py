@@ -64,7 +64,6 @@ default_encoding = hxtool_vars.default_encoding
 hxtool_logging.setLoggerClass()
 logger = hxtool_logging.getLogger()
 
-
 hxtool_vars.app_instance_path = '.'
 oneoff_config = hxtool_config(combine_app_path(hxtool_vars.data_path, 'conf.json'))
 url_prefix = oneoff_config.get_config().get('network', {}).get('url_prefix', '')
@@ -77,7 +76,6 @@ ht_frontend = Blueprint('ht_frontend', __name__, template_folder='templates')
 
 # Register HXTool API blueprint
 app.register_blueprint(ht_api, url_prefix=url_prefix)
-
 
 ### Flask/Jinja Filters
 ####################################
@@ -115,7 +113,6 @@ def dashboardav(hx_api_object):
 @valid_session_required
 def dashboardagent(hx_api_object):
 	return render_template('ht_dashboard-agent.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
-
 
 ### New host drilldown page
 @ht_frontend.route('/hostview', methods=['GET'])
@@ -578,7 +575,6 @@ def init_db():
 								apicache_refresh_interval = hxtool_global.hxtool_config.get_child_item('apicache', 'refresh_interval'),
 								write_cache_size = 0)
 
-
 def app_init(debug = False):	
 	# If we're debugging use a static key
 	if debug:
@@ -632,7 +628,6 @@ def app_init(debug = False):
 	#			logger.info("No background credential for {}, not starting apicache".format(profile['profile_id']))
 	print(app.url_map)
 	
-
 # Version specific upgrade code goes here
 def hxtool_upgrade():
 	files_to_move = ['hxtool.db', 'conf.json', 'hxtool.key', 'hxtool.crt']
