@@ -34,13 +34,13 @@
 }
 
 td.file-rows-control{
-	background: url("static/img/datatables/details_open.png") no-repeat center center;
+	background: url("{{ url_for('static', filename='img/datatables/details_open.png') }}") no-repeat center center;
 }
 td.file-rows-control:hover{
 	cursor: pointer;
 }
 tr.shown td.file-rows-control {
-	background: url("static/img/datatables/details_close.png") no-repeat center center;
+	background: url("{{ url_for('static', filename='img/datatables/details_close.png') }}") no-repeat center center;
 }
 
 table.nested_table th {
@@ -72,7 +72,7 @@ table.nested_table tr:hover {
 				{ extend: "csv", className: "fe-btn", "text": "csv<i class='fe-icon--right fas fa-file'></i>" },
 				{ extend: "excel", className: "fe-btn", "text": "excel<i class='fe-icon--right fas fa-file-excel'></i>" }
 			],
-			"ajax": "/api/v1/datatable_multi_filelisting",
+			"ajax": "{{ url_for('ht_api.datatable_multi_filelisting') }}",
 			"columns": [
 				{ "data": "id" },
 				{ "data": "state" },
@@ -125,7 +125,7 @@ table.nested_table tr:hover {
 					'<td style="width:150px;">'+d.files[i].hostname+'</td>'+
 					'<td>'+d.files[i].path+'</td>';
 				if(d.files[i].downloaded) {
-					file_table +='<td style="width:132px";><button style="margin-right: 6px;"" class="mDownload fe-btn fe-btn--sm fe-btn--hxtool-main" data-url="/download_file?mf_id=' + d.id + "&acq_id=" + d.files[i]['acquisition_id'] + '">download<i class="fe-icon--right fas fa-download"></i></button></td>';
+					file_table +='<td style="width:132px";><button style="margin-right: 6px;"" class="mDownload fe-btn fe-btn--sm fe-btn--hxtool-main" data-url="{{ url_for('ht_frontend.download_multi_file_single') }}?mf_id=' + d.id + "&acq_id=" + d.files[i]['acquisition_id'] + '">download<i class="fe-icon--right fas fa-download"></i></button></td>';
 				}
 				else {
 					file_table +='<td style="width:132px";><button style="margin-right: 6px;"" class="fe-btn fe-btn--sm fe-btn--hxtool-main">waiting<i class="fe-icon--right fas fa-clock"></i></button></td>';
@@ -143,7 +143,7 @@ table.nested_table tr:hover {
 				{ extend: "csv", className: "fe-btn", "text": "csv<i class='fe-icon--right fas fa-file'></i>" },
 				{ extend: "excel", className: "fe-btn", "text": "excel<i class='fe-icon--right fas fa-file-excel'></i>" }
 			],
-			"ajax": "/api/v1/datatable_multi_multifile",
+			"ajax": "{{ url_for('ht_api.datatable_multi_multifile') }}",
 			"columns": [
 				{
 					"className": 'file-rows-control',
@@ -207,7 +207,7 @@ table.nested_table tr:hover {
 
 		$("#fileListingTable").on("click", ".flistAction", function() {
 			if ($(this).data("type") == "stop") {
-				hxtool_ajax_get_request("/api/v1/acquisition/multi/file_listing/stop", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_multi_file_listing_stop') }}", "id=" + $(this).data("id"), function() {
 					ftable.ajax.reload(function() {
 						$("div[id^='file_listing_prog_']").each(function() {
 							$(this).progressNoAnimate();
@@ -216,11 +216,11 @@ table.nested_table tr:hover {
 				});
 			}
 			if ($(this).data("type") == "view") {
-				location.href = "/file_listing?id=" + $(this).data("id");
+				location.href = "{{ url_for('ht_frontend.file_listing') }}?id=" + $(this).data("id");
 			}
 			if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/acquisition/multi/file_listing/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_multi_file_listing_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						ftable.row(myrow).remove().draw();
 					});
@@ -235,7 +235,7 @@ table.nested_table tr:hover {
 		$("#fileAcquisitionTable").on("click", ".mAction", function() {
 			if ($(this).data("type") == "stop") {
 				$(this).find("i").addClass("fa-spin");
-				hxtool_ajax_get_request("/api/v1/acquisition/multi/mf/stop", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_multi_mf_stop') }}", "id=" + $(this).data("id"), function() {
 					setTimeout(function(){ 
 						mtable.ajax.reload(function() {
 							$(this).find("i").removeClass("fa-spin");
@@ -248,7 +248,7 @@ table.nested_table tr:hover {
 			}
 			if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/acquisition/multi/mf/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_multi_mf_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						mtable.row(myrow).remove().draw();
 					});
@@ -286,7 +286,7 @@ table.nested_table tr:hover {
 				fdata.append("use_raw_mode", true);	
 			}
 
-			hxtool_ajax_post_request("/api/v1/acquisition/multi/file_listing/new", fdata, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_acquisition_multi_file_listing') }}", fdata, function() {
 				ftable.ajax.reload(function() {
 					$("div[id^='file_listing_prog_']").each(function() {
 						$(this).progress();
@@ -298,7 +298,7 @@ table.nested_table tr:hover {
 
 		$("#createFileListing").click(function() {
 
-			hxtool_ajax_get_request("/api/v1/hostsets/list", "", function(setResponse) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hostsets_list') }}", "", function(setResponse) {
 				myResponse = JSON.parse(setResponse['api_response']);
 				myhostentries = [];
 				$.each(myResponse['data']['entries'], function( index, value ) {

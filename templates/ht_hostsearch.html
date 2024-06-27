@@ -9,7 +9,7 @@
 
 		$.fn.dataTable.ext.errMode = 'none';
 		var host_datatable = $('#hostTable').DataTable( {
-			"ajax": "/api/v1/datatable_hosts?q=" + query,
+			"ajax": "{{ url_for('ht_api.datatable_hosts') }}?q=" + query,
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -35,7 +35,7 @@
 				{
 				 "targets": 0,
 				 render: function ( data, type, row, meta ) {
-					mydata = '<a class="hostLink" href="/hostview?host=' + row.DT_RowId + '">' + data + '</a>';
+					mydata = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + row.DT_RowId + '">' + data + '</a>';
 				 	return (mydata);
 				 }
 				},
@@ -60,7 +60,17 @@
 
 		$("#hostTable").on("click", ".hostAction", function(){
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/hosts/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+			
+			const urlMap = new Map();
+			map1.set('config', '{{ url_for('ht_api.hxtool_api_hosts_config') }}');
+			map1.set('get', '{{ url_for('ht_api.hxtool_api_hosts_get') }}');
+			map1.set('sysinfo', '{{ url_for('ht_api.hxtool_api_hosts_sysinfo') }}');
+			map1.set('contain', '{{ url_for('ht_api.hxtool_api_hosts_contain') }}');
+			map1.set('uncontain', '{{ url_for('ht_api.hxtool_api_hosts_uncontain') }}');
+			map1.set('contain/approve', '{{ url_for('ht_api.hxtool_api_hosts_contain_approve') }}');
+			map1.set('remove', '{{ url_for('ht_api.hxtool_api_hosts_remove') }}');
+
+			hxtool_ajax_get_request(urlMap.get($(this).data("type")), "id=" + $(this).data("id"), function() {
 				myrow.fadeOut(200, function() {
 					host_datatable.row(myrow).remove().draw();
 				})

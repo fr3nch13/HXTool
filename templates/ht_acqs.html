@@ -8,7 +8,7 @@
 	$(document).ready(function() {
 
 		var acq_datatable = $('#acqTable').DataTable( {
-			"ajax": "/api/v1/datatable_acqs",
+			"ajax": "{{ url_for('ht_api.datatable_acqs') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -44,7 +44,7 @@
 				{
 				 "targets": 1,
 				 render: function ( data, type, row, meta ) {
-				 	return(datatables_parseHostlink(data));
+				 	return(datatables_parseHostlink(data, "{{ url_for('ht_frontend.host_view') }}"));
 				 }
 				},
 				{
@@ -88,15 +88,15 @@
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display'){
 				 		if (row.type == "triage" && row.state == "COMPLETE") {
-				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='/api/v1/acquisition/download?id=/hx/api/v3/acqs/triages/" + row.DT_RowId + ".mans' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
+				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=/hx/api/v3/acqs/triages/" + row.DT_RowId + ".mans' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
 				 			data += "<button data-type='remove' data-id='acqs/triages/" + row.DT_RowId + "' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main-remove'> remove <i class='fe-icon--right fas fa-ban'></i></button>";
 				 		}
 				 		else if (row.type == "live" && row.state == "COMPLETE") {
-				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='/api/v1/acquisition/download?id=/hx/api/v3/acqs/live/" + row.DT_RowId + ".mans&content=json' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
+				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=/hx/api/v3/acqs/live/" + row.DT_RowId + ".mans&content=json' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
 				 			data += "<button data-type='remove' data-id='acqs/live/" + row.DT_RowId + "' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main-remove'> remove <i class='fe-icon--right fas fa-ban'></i></button>";
 				 		}
 				 		else if (row.type == "file" && row.state == "COMPLETE") {
-				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='/api/v1/acquisition/download?id=/hx/api/v3/acqs/files/" + row.DT_RowId + ".zip' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
+				 			data = "<button style='margin-right: 6px;' data-type='download' data-id='{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=/hx/api/v3/acqs/files/" + row.DT_RowId + ".zip' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main'> download <i class='fe-icon--right fas fa-download'></i></button>";
 				 			data += "<button data-type='remove' data-id='acqs/files/" + row.DT_RowId + "' class='acqAction fe-btn fe-btn--sm fe-btn--hxtool-main-remove'> remove <i class='fe-icon--right fas fa-ban'></i></button>";
 				 		}
 				 		else {
@@ -117,9 +117,10 @@
 				location.href = $(this).data("id");
 			}
 			else if ($(this).data("type") == "remove") {
-				hxtool_ajax_get_request("/api/v1/acquisition/remove", "url=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_remove') }}", "url=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						acq_datatable.row(myrow).remove().draw();
+						
 					});
 				});
 			}

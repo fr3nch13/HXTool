@@ -6,7 +6,7 @@
 <script>
 	$(document).ready(function() {
 
-		$.getJSON('/api/v1/scheduler_health', function(myhealth) {
+		$.getJSON('{{ url_for('ht_api.scheduler_health') }}', function(myhealth) {
 			if (myhealth == true) {
 				$("#schedulerHealth").html("<i class='fas fa-check-circle fa-1x fa-fw' style='color: green; margin-right: 2px;' aria-hidden='true'></i> The scheduler is running");
 			}
@@ -16,7 +16,7 @@
 		});
 
 		var scheduler_tasks = $('#tableContainer').DataTable( {
-			"ajax": "/api/v1/scheduler_tasks",
+			"ajax": "{{ url_for('ht_api.scheduler_tasks') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -88,7 +88,12 @@
 		$("#tableContainer").on("click", ".schedulerAction", function(){
 			mytype = $(this).data("type");
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/scheduler/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+
+			const urlMap = new Map();
+			urlMap.set('remove', '{{ url_for('ht_api.hxtool_api_scheduler_remove') }}');
+			
+
+			hxtool_ajax_get_request(urlMap.get($(this).data("type")), "id=" + $(this).data("id"), function() {
 				if (mytype == "remove") {
 					myrow.fadeOut(200, function() {
 						scheduler_tasks.row(myrow).remove().draw();

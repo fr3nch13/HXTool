@@ -1,14 +1,14 @@
-@import url("/static/hxtool-css/hxtool-grid.css");
-@import url("/static/hxtool-css/hxtool-top-nav.css");
-@import url("/static/hxtool-css/hxtool-table.css");
-@import url("/static/hxtool-css/hxtool-panel.css");
-@import url("/static/hxtool-css/hxtool-datatables.css");
-@import url("/static/hxtool-css/hxtool-typography.css");
-@import url("/static/hxtool-css/hxtool-chartjs.css");
-@import url("/static/hxtool-css/hxtool-scriptbuilder.css");
-@import url("/static/hxtool-css/hxtool-login.css");
-@import url("/static/hxtool-css/hxtool-host.css");
-@import url("/static/hxtool-css/hxtool-rtioc.css");
+@import url("./hxtool-grid.css");
+@import url("./hxtool-top-nav.css");
+@import url("./hxtool-table.css");
+@import url("./hxtool-panel.css");
+@import url("./hxtool-datatables.css");
+@import url("./hxtool-typography.css");
+@import url("./hxtool-chartjs.css");
+@import url("./hxtool-scriptbuilder.css");
+@import url("./hxtool-login.css");
+@import url("./hxtool-host.css");
+@import url("./hxtool-rtioc.css");
 
 body {
 	background: radial-gradient(62vw at 50% 0%, #355881 0%, #222222 100%);

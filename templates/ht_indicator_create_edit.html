@@ -211,7 +211,7 @@
 			{% endif %}
 
 			// Render categories
-			hxtool_ajax_get_request("/api/v1/indicator_category/list", "", function(setResponse) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicator_category_list') }}", "", function(setResponse) {
 				myCategoryResponse = JSON.parse(setResponse['api_response']);
 				mycats = [];
 				$.each(myCategoryResponse['data']['entries'], function( index, value ) {
@@ -349,8 +349,8 @@
 						var myForm = new FormData();
 						myForm.append("rule", JSON.stringify(data));
 
-						hxtool_ajax_post_request("/api/v1/indicators/new", myForm, function() {
-							location.href = "/indicators";
+						hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_indicators_new') }}", myForm, function() {
+							location.href = "{{ url_for('ht_frontend.indicators') }}";
 						});
 
 					}
@@ -365,8 +365,8 @@
 						var myForm = new FormData();
 						myForm.append("rule", JSON.stringify(data));
 
-						hxtool_ajax_post_request("/api/v1/indicators/edit", myForm, function() {
-							location.href = "/indicators";
+						hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_indicators_edit') }}", myForm, function() {
+							location.href = "{{ url_for('ht_frontend.indicators') }}";
 						});
 					}
 					else {

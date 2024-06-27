@@ -279,7 +279,7 @@
 	}
 
 	function setContainmentInfo(myAgentId) {
-		hxtool_ajax_get_request("/api/v1/hosts/get", "id=" + myAgentId, function(myhost) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_get') }}", "id=" + myAgentId, function(myhost) {
 			var myhostinfo = JSON.parse(myhost['api_response']);
 
 			$("#fieldContainment").html(myhostinfo['data']['containment_state']);
@@ -324,7 +324,7 @@
 		// Alerts table
 		$.fn.dataTable.ext.errMode = 'none';
 		var hostAlert_datatable = $('#hostAlertTable').DataTable( {
-			"ajax": "/api/v1/datatable_alerts_host?limit=1000&host=" + myAgentId,
+			"ajax": "{{ url_for('ht_api.datatable_alerts_host') }}?limit=1000&host=" + myAgentId,
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -354,7 +354,7 @@
 		// Acqs table
 		$.fn.dataTable.ext.errMode = 'none';
 		var hostAcq_datatable = $('#hostAcqTable').DataTable( {
-			"ajax": "/api/v1/datatable_acqs_host?host=" + myAgentId,
+			"ajax": "{{ url_for('ht_api.datatable_acqs_host') }}?host=" + myAgentId,
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -383,7 +383,7 @@
 		});
 
 		// Get hostinfo
-		hxtool_ajax_get_request("/api/v1/hosts/get", "id=" + myAgentId, function(myhost) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_get') }}", "id=" + myAgentId, function(myhost) {
 			myhostinfo = JSON.parse(myhost['api_response']);
 
 			$("#product").html(host_parsePlatform(myhostinfo['data']['os']['platform']));
@@ -411,13 +411,13 @@
 		}, 20 * 1000);
 
 		// Get configuration
-		hxtool_ajax_get_request("/api/v1/hosts/config", "id=" + myAgentId, function(myhost) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_config') }}", "id=" + myAgentId, function(myhost) {
 			myconf = JSON.parse(myhost['api_response']);
 			$("#showConfigPopup").find(".fe-modal__body").append(generateNestedTable(myconf));
 		});
 
 		// Get sysinfo
-		hxtool_ajax_get_request("/api/v1/hosts/sysinfo", "id=" + myAgentId, function(myhost) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_sysinfo') }}", "id=" + myAgentId, function(myhost) {
 			mysysinfo = JSON.parse(myhost['api_response']);
 
 			$("#fieldDrives").html(mysysinfo['data']['drives']);
@@ -474,17 +474,17 @@
 			var myMode = $("#containButton").html();
 
 			if (myMode == "contain") {
-				hxtool_ajax_get_request("/api/v1/hosts/contain", "id=" + myAgentId, function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_contain') }}", "id=" + myAgentId, function() {
 					setContainmentInfo(myAgentId);
 				});
 			}
 			else if (myMode == "uncontain") {
-				hxtool_ajax_get_request("/api/v1/hosts/uncontain", "id=" + myAgentId, function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts_uncontain') }}", "id=" + myAgentId, function() {
 					setContainmentInfo(myAgentId);
 				});
 			}
 			else if (myMode == "approve containment") {
-				hxtool_ajax_get_request("/api/v1/hosts/contain/approve", "id=" + myAgentId, function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hosts/contain_approve') }}", "id=" + myAgentId, function() {
 					setContainmentInfo(myAgentId);
 				});
 			}
@@ -505,7 +505,7 @@
 			var myAcqMode = $("input[name='datasource']:checked").val();
 
 			if (myAcqMode == "hxtool") {
-				hxtool_ajax_get_request("/api/v1/acquisition/new", "id=" + myAgentId + "&scriptid=" + $("#dataScriptDb").data("id") + "&scriptname=" + $("#dataname").val(), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_new') }}", "id=" + myAgentId + "&scriptid=" + $("#dataScriptDb").data("id") + "&scriptname=" + $("#dataname").val(), function() {
 					hostAcq_datatable.ajax.reload();
 				});
 			}
@@ -518,7 +518,7 @@
 				data.append("id", myAgentId);
 				data.append("scriptname", $("#dataname").val());
 
-				hxtool_ajax_post_request("/api/v1/acquisition/new", data, function(data) {
+				hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_acquisition_new') }}", data, function(data) {
 					hostAcq_datatable.ajax.reload();
 				});
 			}
@@ -535,7 +535,7 @@
 
 		$("#fileSubmit").click(function() {
 			$("#fileNewPopup").hide();
-			hxtool_ajax_get_request("/api/v1/acquisition/file", "id=" + myAgentId + "&type=" + $("#filemode").data("id") + "&path=" + $("#filepath").val() + "&filename=" + $("#filename").val(), function() {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_file') }}", "id=" + myAgentId + "&type=" + $("#filemode").data("id") + "&path=" + $("#filepath").val() + "&filename=" + $("#filename").val(), function() {
 				hostAcq_datatable.ajax.reload();
 			});
 
@@ -570,12 +570,12 @@
 			myTriageMode = $("input[name='triagemode']:checked").val();
 
 			if (myTriageMode == "standard" || myTriageMode in [1,2,4,8]) {
-				hxtool_ajax_get_request("/api/v1/acquisition/triage", "&id=" + myAgentId + "&type=" + myTriageMode, function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_triage') }}", "&id=" + myAgentId + "&type=" + myTriageMode, function() {
 					hostAcq_datatable.ajax.reload();
 				});
 			}
 			else if (myTriageMode == "timestamp") {
-				hxtool_ajax_get_request("/api/v1/acquisition/triage", "&id=" + myAgentId + "&type=" + myTriageMode + "&timestamp=" + $("#triage_timestamp").val(), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_triage') }}", "&id=" + myAgentId + "&type=" + myTriageMode + "&timestamp=" + $("#triage_timestamp").val(), function() {
 					hostAcq_datatable.ajax.reload();
 				});
 			}
@@ -595,14 +595,14 @@
 			var myAgentID = (myhostinfo['data']['_id']);
 			var myFilePath = $(this).data("id");
 
-			hxtool_ajax_get_request("/api/v1/acquisition/file", "id=" + myAgentID + "&type=api&filepath=" + myFilePath, function(resp) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_file') }}", "id=" + myAgentID + "&type=api&filepath=" + myFilePath, function(resp) {
 				hostAcq_datatable.ajax.reload();
 			});
 
 		});
 
 		$('#hostAlertTable').on('click','tr',function(){
-			hxtool_ajax_get_request("/api/v1/alerts/get", "id=" + $(this).attr("id"), function(myalert) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_alerts_get') }}", "id=" + $(this).attr("id"), function(myalert) {
 
 				var alert = JSON.parse(myalert['api_response']);
 
@@ -623,7 +623,7 @@
 
 		$('#hostAcqTable').on('click','tr',function() {
 			myUrl = $(this).attr("id");
-			hxtool_ajax_get_request("/api/v1/acquisition/get", "url=" + $(this).attr("id"), function(myacq) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_get') }}", "url=" + $(this).attr("id"), function(myacq) {
 				var acq = JSON.parse(myacq['api_response']);
 
 				// First clear the content panel
@@ -651,19 +651,19 @@
 		
 		$('#hostContentPanel').on('click','.acqDownload',function() {
 			if ($(this).data("type") == "files" || $(this).data("type") == "bulk") {
-				location.href = "/api/v1/acquisition/download?id=" + $(this).data("id") + ".zip";
+				location.href = "{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=" + $(this).data("id") + ".zip";
 			}
 			else if ($(this).data("type") == "live") {
-				location.href = "/api/v1/acquisition/download?id=" + $(this).data("id") + ".mans&content=json";
+				location.href = "{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=" + $(this).data("id") + ".mans&content=json";
 			}
 			else {
-				location.href = "/api/v1/acquisition/download?id=" + $(this).data("id") + ".mans";
+				location.href = "{{ url_for('ht_api.hxtool_api_acquisition_download') }}?id=" + $(this).data("id") + ".mans";
 			}
 		});
 
 		$('#hostContentPanel').on('click','.acqRemove',function() {
 			myrowUrl = $(this).data("id");
-			hxtool_ajax_get_request("/api/v1/acquisition/remove", "url=" + $(this).data("id"), function(resMyRemove) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_acquisition_remove') }}", "url=" + $(this).data("id"), function(resMyRemove) {
 				$("#hostContentPanel").find(".panelContentClass").html("");
 				hostAcq_datatable.row("#/hx/api/v3/" + myrowUrl).remove().draw();
 			});
@@ -671,7 +671,7 @@
 
 		$('#hostContentPanel').on('click','.alertRemove',function() {
 			myrowID = $(this).data("id");
-			hxtool_ajax_get_request("/api/v1/alerts/remove", "id=" + $(this).data("id"), function(resMyRemove) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_alerts_remove') }}", "id=" + $(this).data("id"), function(resMyRemove) {
 				$("#hostContentPanel").find(".panelContentClass").html("");
 				hostAlert_datatable.row("#" + myrowID).remove().draw();
 			});

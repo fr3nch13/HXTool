@@ -7,7 +7,7 @@
 		function datatable_last_alerts() {
 			$.fn.dataTable.ext.errMode = 'none';
 			var row2_cell1_datatable = $('#row2_cell1_table').DataTable( {
-				"ajax": "/api/v1/datatable_alerts?limit=20&source=MAL",
+				"ajax": "{{ url_for('ht_api.datatable_alerts') }}?limit=20&source=MAL",
 				"paging":   false,
 				"ordering": false,
 				"info":     false,
@@ -33,7 +33,7 @@
 					 render: function ( data, type, row, meta ) {
 					 	if(type === 'display'){
 					 		myArr = data.split("___");
-					 		data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
+					 		data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
 					 	}
 					 	return data;
 					 }
@@ -66,7 +66,7 @@
 
 				$("#avContentPopup").find(".fe-modal__header").find("h4").append("<i id='popupSpinner' style='margin-left: 12px; color: #11a962;' class='fas fa-spinner fa-spin'></i>");
 				avContentPopup_datatable.clear().draw();
-				avContentPopup_datatable.ajax.url("/api/v1/datatable/avcontent?version=" + label);
+				avContentPopup_datatable.ajax.url("{{ url_for('ht_api.datatable_avcontent_detail') }}?version=" + label);
 				avContentPopup_datatable.ajax.reload(function() {
 					$("#popupSpinner").remove();
 				});
@@ -84,7 +84,7 @@
 
 				$("#avEnginePopup").find(".fe-modal__header").find("h4").append("<i id='popupSpinner' style='margin-left: 12px; color: #11a962;' class='fas fa-spinner fa-spin'></i>");
 				avEnginePopup_datatable.clear().draw();
-				avEnginePopup_datatable.ajax.url("/api/v1/datatable/avengine?version=" + label);
+				avEnginePopup_datatable.ajax.url("{{ url_for('ht_api.datatable_avengine_detail') }}?version=" + label);
 				avEnginePopup_datatable.ajax.reload(function() {
 					$("#popupSpinner").remove();
 				});
@@ -102,7 +102,7 @@
 
 				$("#avStatusPopup").find(".fe-modal__header").find("h4").append("<i id='popupSpinner' style='margin-left: 12px; color: #11a962;' class='fas fa-spinner fa-spin'></i>");
 				avStatusPopup_datatable.clear().draw();
-				avStatusPopup_datatable.ajax.url("/api/v1/datatable/avstatus?state=" + label);
+				avStatusPopup_datatable.ajax.url("{{ url_for('ht_api.datatable_avstatus_detail') }}?state=" + label);
 				avStatusPopup_datatable.ajax.reload(function() {
 					$("#popupSpinner").remove();
 				});
@@ -154,7 +154,7 @@
 					{
 					 "targets": 0,
 					 render: function ( data, type, row, meta ) {
-						data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
+						data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
 						return(data);
 					 }
 					},
@@ -184,7 +184,7 @@
 					{
 					 "targets": 0,
 					 render: function ( data, type, row, meta ) {
-						data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
+						data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
 						return(data);
 					 }
 					},
@@ -214,7 +214,7 @@
 					{
 					 "targets": 0,
 					 render: function ( data, type, row, meta ) {
-						data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
+						data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(row.agentid) + '">' + data + '</a>';
 						return(data);
 					 }
 					},
@@ -224,7 +224,7 @@
 
 
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_malwarecontent",
+				url: "{{ url_for('ht_api.chartjs_malwarecontent') }}",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -258,7 +258,7 @@
 			});
 
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_malwareengine",
+				url: "{{ url_for('ht_api.chartjs_malwareengine') }}",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -293,7 +293,7 @@
 
 
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_malwarestatus",
+				url: "{{ url_for('ht_api.chartjs_malwarestatus') }}",
 				dataType: 'json',
 			}).done(function (myChartData) {
 

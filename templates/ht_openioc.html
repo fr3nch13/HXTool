@@ -7,7 +7,7 @@
 	$(document).ready(function() {
 
 		$(document).on('click', '.ioc_view', function() {
-			hxtool_ajax_get_request("/api/v1/openioc/view", "id=" + $(this).closest("tr").attr("id"), function(mydata) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_openioc_view') }}", "id=" + $(this).closest("tr").attr("id"), function(mydata) {
 				myIocObject = JSON.parse(mydata['api_response']);
 				// Why???!?
 				myIocObject = JSON.parse(myIocObject);
@@ -24,7 +24,7 @@
 
 		var iocTable = $('#iocTable').DataTable( {
 			"ajax": {
-				"url": "/api/v1/datatable_openioc",
+				"url": "{{ url_for('ht_api.datatable_openioc') }}",
 				"dataSrc": ""
 			},
 			"rowId": 'ioc_id',
@@ -71,13 +71,13 @@
 		});
 
 		$("#iocTable").on('click', '.ioc_download', function() {
-			location.href = "/api/v1/openioc/download?id=" + $(this).data("id")
+			location.href = "{{ url_for('ht_api.hxtool_api_openioc_download') }}?id=" + $(this).data("id")
 
 		});
 
 		$("#iocTable").on('click', '.ioc_remove', function() {
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/openioc/remove", "id=" + $(this).data("id"), function() {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_openioc_remove') }}", "id=" + $(this).data("id"), function() {
 				myrow.fadeOut(200, function() {
 					iocTable.row(myrow).remove().draw();
 				});
@@ -94,7 +94,7 @@
 
 			data.append("iocname", $("#iocname").val());
 
-			hxtool_ajax_post_request("/api/v1/openioc/upload", data, function(data) {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_openioc_upload') }}", data, function(data) {
 				iocTable.ajax.reload();
 				$("#openiocNewPopup").hide();
 			});

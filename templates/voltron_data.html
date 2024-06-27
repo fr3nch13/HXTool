@@ -9,7 +9,7 @@
 		
 		$.fn.dataTable.ext.errMode = 'none';
 		var host_datatable = $('#dataTable').DataTable( {
-			"ajax": "/api/v1/analysis/data",
+			"ajax": "{{ url_for('ht_api.x15_analysis_data') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,

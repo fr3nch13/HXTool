@@ -31,7 +31,11 @@
 		$("#taskprofileTable").on("click", ".tpAction", function(){
 			mytype = $(this).data("type");
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/taskprofile/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+			const urlMap = new Map();
+			urlMap.set('remove', '{{ url_for('ht_api.hxtool_api_taskprofile_remove') }}')
+			urlMap.set('new', '{{ url_for('ht_api.hxtool_api_taskprofile_new') }}')
+
+			hxtool_ajax_get_request(urlMap.get($(this).data("type")), "id=" + $(this).data("id"), function() {
 				if (mytype == "remove") {
 					myrow.fadeOut(200, function() {
 						taskprofileTable.row(myrow).remove().draw();
@@ -100,7 +104,7 @@
 			$.ajax
 			({
 				type: "POST",
-				url: '/api/v1/taskprofile/new',
+				url: '{{ url_for('ht_api.hxtool_api_taskprofile_new') }}',
 				dataType: 'json',
 				contentType: 'application/json',
 				data: JSON.stringify(myTasks),
@@ -192,7 +196,7 @@
 
 		var taskprofileTable = $('#taskprofileTable').DataTable( {
 			"ajax": {
-				"url": "/api/v1/datatable_taskprofiles",
+				"url": "{{ url_for('ht_api.datatable_taskprofiles') }}",
 				"dataSrc": ""
 			},
 			"paging":   false,

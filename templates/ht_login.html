@@ -9,18 +9,18 @@
 <head>
 	<title>HXTool - Please Authenticate</title>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
-	<script type="text/javascript" src="/static/hxtool-js/hxtool-generic.js"></script>
-	<script type="text/javascript" src="/static/hxtool-js/hxtool-doc-ready.js"></script>
-	<link href="/static/fontawesome-free-5.7.2-web/css/all.css" rel="stylesheet">
-	<link href="/static/fe-fds/fds-dark.css" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="static/hxtool-css/hxtool-main.css">
-	<link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
+	<script type="text/javascript" src="{{ url_for('static', filename='hxtool-js/hxtool-generic.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='hxtool-js/hxtool-doc-ready.js') }}"></script>
+	<link href="{{ url_for('static', filename='fontawesome-free-5.7.2-web/css/all.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='fe-fds/fds-dark.css') }}" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hxtool-css/hxtool-main.css') }}">
+	<link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" type="image/x-icon" />
 </head>
 
 <script language="JavaScript">
 
 	function getProfiles() {
-		hxtool_ajax_get_request("/api/v1/profile", "", function(myprofiles) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.profile') }}", "", function(myprofiles) {
 			$("#profile").next("div").find("ul").html("");
 			$.each(myprofiles.data, function() {
 				$("#profile").next("div").find("ul").append("<li class='fe-dropdown__item'><a class='fe-dropdown__item-link'><span class='fe-dropdown__item-link-left-section'><i style='margin-top: 2px;' class='fas fa-check fa-lg'></i></span><span class='fe-dropdown__item-link-text' data-id='" + this.profile_id + "'>" + this.hx_name + "</span></a></li>");
@@ -32,7 +32,10 @@
 	
 	$(document).ready(function() {
 		getProfiles();
-		hxtool_doc_ready();
+		hxtool_doc_ready(
+			'{{ url_for('ht_frontend.hosts') }}',
+			'{{ url_for('ht_frontend.logout') }}'
+		);
 
 		$(".hxtool_dynamic-dropdown").on( "click", "a", function(e) {
 			e.preventDefault();
@@ -51,7 +54,7 @@
 
 		$("#profile_delete").click(function() {
 			$("#profileRemove").find(".fe-modal__body").html("");
-			hxtool_ajax_get_request("/api/v1/profile", "", function(myprofiles) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.profile') }}", "", function(myprofiles) {
 				$("#profileRemove").find(".fe-modal__body").append("<table style='width: 100%;' class='hxtool_table'></table>");
 				$("#profileRemove").find(".fe-modal__body").find("table").append("<thead><th>name</th><th>hostname</th><th>port</th><th>action</th></thead>");
 				$("#profileRemove").find(".fe-modal__body").find("table").append("<tbody></tbody>");
@@ -69,7 +72,7 @@
 
 			$.ajax({
 				type: "DELETE",
-				url: "/api/v1/profile/" + profile_id,
+				url: "{{ url_for('ht_api.profile') }}" + profile_id,
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				success: function(r) {
@@ -107,7 +110,7 @@
 			
 			$.ajax({
 				type: "PUT",
-				url: "/api/v1/profile",
+				url: "{{ url_for('ht_api.profile') }}",
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				data: request_json,
@@ -135,7 +138,7 @@
 
 		<div style='padding: 24px;'>
 
-			<div style='text-align: center;'><img src='/static/fireeye-2-color.png' style='width: 250px;'></div>
+			<div style='text-align: center;'><img src='{{ url_for('static', filename='fireeye-2-color.png') }}' style='width: 250px;'></div>
 			<h3 style='text-align: center; font-size: 24px; font-weight: bold;'>HXTool {{ version }}</h3>
 			<h3 style='text-align: center; font-size: 14px;'>Extended user interface for FireEye Endpoint Security</h3>
 			<br/>

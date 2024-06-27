@@ -5,7 +5,7 @@
 <script>
 	$(document).ready(function() {
 
-		hxtool_ajax_get_request("/api/v1/version/get", "", function(res) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_version_get') }}", "", function(res) {
 			myVersion = JSON.parse(res['api_response']);
 			$("#hxVersionContainer").append(hxtoolGenerateNestedTable(myVersion['data']));
 		});
@@ -24,7 +24,7 @@
 
 		$("#hxtoolVersionContainer").append(hxtoolGenerateNestedTable(hxToolInfo));
 
-		hxtool_ajax_get_request("/api/v1/cache/statistics", "", function(cacheStats) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.cache_statistics') }}", "", function(cacheStats) {
 			$("#CacheStatContainer").append(hxtoolGenerateNestedTable(cacheStats));
 		});
 

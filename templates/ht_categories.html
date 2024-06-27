@@ -7,7 +7,7 @@
 	$(document).ready(function() {
 
 		var category_datatable = $('#categoryTable').DataTable( {
-			"ajax": "/api/v1/datatable_categories",
+			"ajax": "{{ url_for('ht_api.datatable_categories') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -52,7 +52,7 @@
 
 		$('#categoryTable').on("click", ".categoryRemove", function(){
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/indicator_category/remove", "id=" + $(this).data("id"), function() {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicator_category_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						category_datatable.row(myrow).remove().draw();
 					});
@@ -61,7 +61,7 @@
 
 		$('#categoryNewSubmit').click(function(){
 			$('#categoryNewPopup').hide();
-			hxtool_ajax_get_request("/api/v1/indicator_category/new", "name=" + $("#category_name").val() + "&retention_policy=" + $("#retention_policy").data("id") + "&edit_policy=" + $("#edit_policy").data("id"), function() {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicator_category_new') }}", "name=" + $("#category_name").val() + "&retention_policy=" + $("#retention_policy").data("id") + "&edit_policy=" + $("#edit_policy").data("id"), function() {
 				category_datatable.ajax.reload();
 			});
 		});

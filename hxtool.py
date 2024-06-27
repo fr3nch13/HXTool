@@ -64,13 +64,19 @@ default_encoding = hxtool_vars.default_encoding
 hxtool_logging.setLoggerClass()
 logger = hxtool_logging.getLogger()
 
+
+hxtool_vars.app_instance_path = '.'
+oneoff_config = hxtool_config(combine_app_path(hxtool_vars.data_path, 'conf.json'))
+url_prefix = oneoff_config.get_config().get('network', {}).get('url_prefix', '')
+
 # Create the app
-app = Flask(hxtool_logging.root_logger_name, static_url_path='/static')
+app = Flask(hxtool_logging.root_logger_name, static_url_path='{0}/static'.format(url_prefix))
 
 hxtool_vars.app_instance_path = app.root_path
+ht_frontend = Blueprint('ht_frontend', __name__, template_folder='templates')
 
 # Register HXTool API blueprint
-app.register_blueprint(ht_api)
+app.register_blueprint(ht_api, url_prefix=url_prefix)
 
 
 ### Flask/Jinja Filters
@@ -86,33 +92,33 @@ def nl2br(eval_ctx, value):
 	return result
 
 #### NON PROD
-@app.route('/analysis_data', methods=['GET'])
+@ht_frontend.route('/analysis_data', methods=['GET'])
 @valid_session_required
 def analysis_data(hx_api_object):
 	return render_template('voltron_data.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 #############
 
 ### Dashboard page
-@app.route('/', methods=['GET'])
+@ht_frontend.route('/', methods=['GET'])
 @valid_session_required
 def dashboard(hx_api_object):
 	return render_template('ht_main-dashboard.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### AV Dashboard
-@app.route('/dashboard-av', methods=['GET'])
+@ht_frontend.route('/dashboard-av', methods=['GET'])
 @valid_session_required
 def dashboardav(hx_api_object):
 	return render_template('ht_dashboard-av.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Agent Dashboard
-@app.route('/dashboard-agent', methods=['GET'])
+@ht_frontend.route('/dashboard-agent', methods=['GET'])
 @valid_session_required
 def dashboardagent(hx_api_object):
 	return render_template('ht_dashboard-agent.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 
 ### New host drilldown page
-@app.route('/hostview', methods=['GET'])
+@ht_frontend.route('/hostview', methods=['GET'])
 @valid_session_required
 def host_view(hx_api_object):
 	myscripts = hxtool_global.hxtool_db.scriptList()
@@ -124,19 +130,19 @@ def host_view(hx_api_object):
 	return render_template('ht_host_view.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), scripts=scripts, taskprofiles=taskprofiles, alerttypes=json.dumps(hxtool_global.hx_alert_types))
 
 ### Alerts page
-@app.route('/alert', methods=['GET'])
+@ht_frontend.route('/alert', methods=['GET'])
 @valid_session_required
 def alert(hx_api_object):
 	return render_template('ht_alert.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Scheduler page
-@app.route('/scheduler', methods=['GET'])
+@ht_frontend.route('/scheduler', methods=['GET'])
 @valid_session_required
 def scheduler_view(hx_api_object):
 	return render_template('ht_scheduler.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Script builder page
-@app.route('/scriptbuilder', methods=['GET', 'POST'])
+@ht_frontend.route('/scriptbuilder', methods=['GET', 'POST'])
 @valid_session_required
 def scriptbuilder_view(hx_api_object):
 	with open(combine_app_path("static", "acquisitions.json"), 'r') as f:
@@ -145,25 +151,25 @@ def scriptbuilder_view(hx_api_object):
 	return render_template('ht_scriptbuilder.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), auditspace=auditspace)
 
 ### Task profile page
-@app.route('/taskprofile', methods=['GET', 'POST'])
+@ht_frontend.route('/taskprofile', methods=['GET', 'POST'])
 @valid_session_required
 def taskprofile(hx_api_object):
 	return render_template('ht_taskprofile.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Audit Viewer page
-@app.route('/auditexplorer', methods=['GET'])
+@ht_frontend.route('/auditexplorer', methods=['GET'])
 @valid_session_required
 def auditexplorer(hx_api_object):
 	return render_template('ht_auditviewer.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Manage Audits page
-@app.route('/auditmanager', methods=['GET'])
+@ht_frontend.route('/auditmanager', methods=['GET'])
 @valid_session_required
 def auditmanager(hx_api_object):
 	return render_template('ht_auditmanager.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Bulk acq page
-@app.route('/bulkacq', methods=['GET'])
+@ht_frontend.route('/bulkacq', methods=['GET'])
 @valid_session_required
 def bulkacq_view(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restListHostsets()
@@ -178,19 +184,19 @@ def bulkacq_view(hx_api_object):
 	return render_template('ht_bulkacq.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), hostsets=hostsets, scripts=scripts, taskprofiles=taskprofiles)
 
 ### Hosts
-@app.route('/hostsearch', methods=['GET', 'POST'])
+@ht_frontend.route('/hostsearch', methods=['GET', 'POST'])
 @valid_session_required
 def hosts(hx_api_object):
 	return render_template('ht_hostsearch.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Acquisitions listing
-@app.route('/acqs', methods=['GET'])
+@ht_frontend.route('/acqs', methods=['GET'])
 @valid_session_required
 def acqs(hx_api_object):
 	return render_template('ht_acqs.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 #### Enterprise Search
-@app.route('/search', methods=['GET'])
+@ht_frontend.route('/search', methods=['GET'])
 @valid_session_required
 def search(hx_api_object):	
 	(ret, response_code, response_data) = hx_api_object.restListHostsets()
@@ -201,7 +207,7 @@ def search(hx_api_object):
 	
 	return render_template('ht_searchsweep.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), hostsets=hostsets, openiocs=openiocs)
 
-@app.route('/searchresult', methods=['GET'])
+@ht_frontend.route('/searchresult', methods=['GET'])
 @valid_session_required
 def searchresult(hx_api_object):
 	if request.args.get('id'):
@@ -209,28 +215,28 @@ def searchresult(hx_api_object):
 		return render_template('ht_search_dd.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 			
 ### Manage Indicators
-@app.route('/indicators', methods=['GET', 'POST'])
+@ht_frontend.route('/indicators', methods=['GET', 'POST'])
 @valid_session_required
 def indicators(hx_api_object):
 	return render_template('ht_indicators.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
-@app.route('/indicatorqueue', methods=['GET'])
+@ht_frontend.route('/indicatorqueue', methods=['GET'])
 @valid_session_required
 def indicatorsqueue(hx_api_object):
 	return render_template('ht_indicatorqueue.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
-@app.route('/categories', methods=['GET'])
+@ht_frontend.route('/categories', methods=['GET'])
 @valid_session_required
 def categories(hx_api_object):
 	return render_template('ht_categories.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Streaming indicators
-@app.route('/streaming_indicators', methods=['GET', 'POST'])
+@ht_frontend.route('/streaming_indicators', methods=['GET', 'POST'])
 @valid_session_required
 def streaming_indicators(hx_api_object):
 	return render_template('ht_streaming_indicators.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
-@app.route('/streamingioc', methods=['GET'])
+@ht_frontend.route('/streamingioc', methods=['GET'])
 @valid_session_required
 def streamingioc(hx_api_object):
 			
@@ -286,7 +292,7 @@ def streamingioc(hx_api_object):
 							eventspace=eventspace)
 
 ### Real-time indicators
-@app.route('/rtioc', methods=['GET'])
+@ht_frontend.route('/rtioc', methods=['GET'])
 @valid_session_required
 def rtioc(hx_api_object):
 			
@@ -350,7 +356,7 @@ def eventspace_from_file():
 		return myEventFile.read()
 
 # TODO: These two functions should be merged at some point
-@app.route('/bulkdownload', methods = ['GET'])
+@ht_frontend.route('/bulkdownload', methods = ['GET'])
 @valid_session_required
 def bulkdownload(hx_api_object):
 	if request.args.get('id'):
@@ -368,8 +374,7 @@ def bulkdownload(hx_api_object):
 	else:
 		abort(404)
 
-		
-@app.route('/download')
+@ht_frontend.route('/download')
 @valid_session_required
 def download(hx_api_object):
 	if request.args.get('id'):
@@ -389,7 +394,7 @@ def download(hx_api_object):
 	else:
 		abort(404)		
 
-@app.route('/download_file')
+@ht_frontend.route('/download_file')
 @valid_session_required
 def download_multi_file_single(hx_api_object):
 	if 'mf_id' in request.args and 'acq_id' in request.args:
@@ -407,26 +412,26 @@ def download_multi_file_single(hx_api_object):
 	abort(404)		
 
 ### Scripts
-@app.route('/scripts', methods=['GET'])
+@ht_frontend.route('/scripts', methods=['GET'])
 @valid_session_required
 def scripts(hx_api_object):
 	return render_template('ht_scripts.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### OpenIOCs
-@app.route('/openioc', methods=['GET'])
+@ht_frontend.route('/openioc', methods=['GET'])
 @valid_session_required
 def openioc(hx_api_object):
 	return render_template('ht_openioc.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Multifile acquisitions
-@app.route('/multifile', methods=['GET'])
+@ht_frontend.route('/multifile', methods=['GET'])
 @valid_session_required
 def multifile(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restListHostsets()
 	hostsets = formatHostsets(response_data)
 	return render_template('ht_multifile.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), hostsets=hostsets)
 
-@app.route('/file_listing', methods=['GET'])
+@ht_frontend.route('/file_listing', methods=['GET'])
 @valid_session_required
 def file_listing(hx_api_object):
 	#TODO: Modify template and move to Ajax
@@ -437,23 +442,23 @@ def file_listing(hx_api_object):
 	return render_template('ht_file_listing.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), file_listing=file_listing, fl_results=fl_results, display_fields=display_fields)
 
 ### Stacking
-@app.route('/stacking', methods=['GET'])
+@ht_frontend.route('/stacking', methods=['GET'])
 @valid_session_required
 def stacking(hx_api_object):
 	return render_template('ht_stacking.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
-@app.route('/stackinganalyze', methods=['GET'])
+@ht_frontend.route('/stackinganalyze', methods=['GET'])
 @valid_session_required
 def stackinganalyze(hx_api_object):
 	return render_template('ht_stacking_analyze.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
-@app.route('/sysinfo', methods=['GET'])
+@ht_frontend.route('/sysinfo', methods=['GET'])
 @valid_session_required
 def sysinfo(hx_api_object):
 	return render_template('ht_sysinfo.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 
 ### Settings
-@app.route('/settings', methods=['GET', 'POST'])
+@ht_frontend.route('/settings', methods=['GET', 'POST'])
 @valid_session_required
 def settings(hx_api_object):
 	if request.method == 'POST':
@@ -468,9 +473,8 @@ def settings(hx_api_object):
 	
 	return render_template('ht_settings.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port), bgcreds=bgcreds)
 
-
 ### Custom Configuration Channels
-@app.route('/channels', methods=['GET'])
+@ht_frontend.route('/channels', methods=['GET'])
 @valid_session_required
 def channels(hx_api_object):
 	(ret, response_code, response_data) = hx_api_object.restListCustomConfigChannels(limit=1)
@@ -482,9 +486,8 @@ def channels(hx_api_object):
 	else:
 		return render_template('ht_noaccess.html', user=session['ht_user'], controller='{0}:{1}'.format(hx_api_object.hx_host, hx_api_object.hx_port))
 		
-
 #### Authentication
-@app.route('/login', methods=['GET', 'POST'])
+@ht_frontend.route('/login', methods=['GET', 'POST'])
 def login():
 	fail = None
 	if (request.method == 'POST'):
@@ -527,7 +530,7 @@ def login():
 				fail = "Invalid profile ID."
 	return render_template('ht_login.html', hx_default_port = HXAPI.HX_DEFAULT_PORT, fail = fail, version = hxtool_vars.__version__)
 		
-@app.route('/logout', methods=['GET'])
+@ht_frontend.route('/logout', methods=['GET'])
 def logout():
 	if session:
 		if 'ht_api_object' in session:
@@ -538,6 +541,8 @@ def logout():
 		session.clear()
 	return redirect("/login", code=302)
 
+# Register the Frontend blueprint.
+app.register_blueprint(ht_frontend, url_prefix=url_prefix)
 		
 ###########
 ### Main ##
@@ -625,6 +630,8 @@ def app_init(debug = False):
 	#			hxtool_global.apicache[profile['profile_id']] = hxtool_api_cache(hxtool_global.hxtool_scheduler.task_hx_api_sessions[profile['profile_id']], profile['profile_id'], hxtool_global.hxtool_config['apicache']['intervals'], hxtool_global.hxtool_config['apicache']['types'])
 	#		else:
 	#			logger.info("No background credential for {}, not starting apicache".format(profile['profile_id']))
+	print(app.url_map)
+	
 
 # Version specific upgrade code goes here
 def hxtool_upgrade():
@@ -711,10 +718,11 @@ if __name__ == "__main__":
 
 	
 	# TODO: This should really be after app.run, but you cannot run code after app.run, so we'll leave this here for now.
-	logger.info("Application is running. Please point your browser to http{0}://{1}:{2}. Press Ctrl+C/Ctrl+Break to exit.".format(
+	logger.info("Application is running. Please point your browser to http{0}://{1}:{2}{3}. Press Ctrl+C/Ctrl+Break to exit.".format(
 																							's' if hxtool_global.hxtool_config['network']['ssl'] == 'enabled' else '',
 																							hxtool_global.hxtool_config['network']['listen_address'], 
-																							hxtool_global.hxtool_config['network']['port']))
+																							hxtool_global.hxtool_config['network']['port'], 
+																							hxtool_global.hxtool_config['network']['url_prefix']))
 	if hxtool_global.hxtool_config['network']['ssl'] == "enabled":
 		app.config['SESSION_COOKIE_SECURE'] = True
 		context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
@@ -734,7 +742,7 @@ if __name__ == "__main__":
 		
 		context.load_cert_chain(combine_app_path(hxtool_vars.data_path, hxtool_global.hxtool_config['ssl']['cert']), combine_app_path(hxtool_vars.data_path, hxtool_global.hxtool_config['ssl']['key']))
 		app.run(host=hxtool_global.hxtool_config['network']['listen_address'], 
-				port=hxtool_global.hxtool_config['network']['port'], 
+				port=hxtool_global.hxtool_config['network']['port'],
 				ssl_context=context, 
 				threaded=True)
 	else:

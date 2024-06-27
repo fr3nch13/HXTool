@@ -45,7 +45,7 @@
 			if (e.which == 13) {
 				$('#shader').show();
 				urltail = parseFilters()
-				alert_datatable.ajax.url( '/api/v1/datatable_alerts_full?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
+				alert_datatable.ajax.url( '{{ url_for('ht_api.datatable_alerts_full') }}?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
 					$('#shader').hide();
 				});
 			}
@@ -55,7 +55,7 @@
 			if (e.which == 13) {
 				$('#shader').show();
 				urltail = parseFilters()
-				alert_datatable.ajax.url( '/api/v1/datatable_alerts_full?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
+				alert_datatable.ajax.url( '{{ url_for('ht_api.datatable_alerts_full') }}?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
 					$('#shader').hide();
 				});
 			}
@@ -65,7 +65,7 @@
 			if (e.which == 13) {
 				$('#shader').show();
 				urltail = parseFilters()
-				alert_datatable.ajax.url( '/api/v1/datatable_alerts_full?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
+				alert_datatable.ajax.url( '{{ url_for('ht_api.datatable_alerts_full') }}?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
 					$('#shader').hide();
 				});
 			}
@@ -74,7 +74,7 @@
 		$("#refresh").click(function() {
 			// $('#hxtool_shader').show();
 			urltail = parseFilters()
-			alert_datatable.ajax.url( '/api/v1/datatable_alerts_full?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
+			alert_datatable.ajax.url( '{{ url_for('ht_api.datatable_alerts_full') }}?limit=1000&startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + urltail ).load(function ( json ) {
 				kaka = "kaka";
 				// $('#hxtool_shader').hide();
 			});
@@ -91,7 +91,7 @@
 		$(document).on('click', '.showannotation', function() {
 			aArr = $(this).attr("id").split("_");
 
-			hxtool_ajax_get_request("/api/v1/annotation/alert/view", "id=" + aArr[1], function(myAnnotations) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_annotation_alert_view') }}", "id=" + aArr[1], function(myAnnotations) {
 
 				$("#annotateViewText").html("");
 
@@ -160,7 +160,7 @@
 			data.append("text", $("#annotateText").val());
 			data.append("state", $("#annotationState").data("id"));
 
-			hxtool_ajax_post_request("/api/v1/annotation/add", data, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_annotation_add') }}", data, function() {
 				$("#annotationPopup").hide();
 				alert_datatable.ajax.reload();
 			});
@@ -177,7 +177,7 @@
 
 		$("#alertTable").on("click", ".alertAction", function(){
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/alerts/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_alerts_get') }}" + $(this).data("type"), "id=" + $(this).data("id"), function() {
 				myrow.fadeOut(200, function() {
 					alert_datatable.row(myrow).remove().draw();
 				})
@@ -187,7 +187,7 @@
 
 		$.fn.dataTable.ext.errMode = 'none';
 		alert_datatable = $('#alertTable').DataTable( {
-			"ajax": "/api/v1/datatable_alerts_full?limit=1000&startDate=" + pastDate + "&endDate=" + currentDate,
+			"ajax": "{{ url_for('ht_api.datatable_alerts_full') }}?limit=1000&startDate=" + pastDate + "&endDate=" + currentDate,
 			"paging":   false,
 			"ordering": true,
 			"colReorder": true,
@@ -233,7 +233,7 @@
 				 "width": "150px",
 				 render: function ( data, type, row, meta ) {
 					myArr = data.split("___");
-					data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
+					data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
 					return(data);
 				 }
 				},
@@ -324,7 +324,7 @@
 		var currentDate = fullDate.toISOString().substr(0, 10);
 
 		var jsonData = $.ajax({
-			url: "/api/v1/chartjs_events_timeline?startDate=" + pastDate + "&endDate=" + currentDate,
+			url: "{{ url_for('ht_api.chartjs_events_timeline') }}?startDate=" + pastDate + "&endDate=" + currentDate,
 			dataType: 'json',
 		}).done(function (myChartData) {
 

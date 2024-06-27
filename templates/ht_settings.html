@@ -8,7 +8,7 @@
 	$(document).ready(function() {
 
 		$("#unset").click(function() {
-			location.href = "/settings?unset=1";
+			location.href = "{{ url_for('ht_frontend.settings') }}?unset=1";
 		});
 
 	});

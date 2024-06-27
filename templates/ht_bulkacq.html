@@ -16,7 +16,7 @@
 
 		$.fn.dataTable.ext.errMode = 'none';
 		var bulk_datatable = $('#bulktable').DataTable( {
-			"ajax": "/api/v1/datatable_bulk",
+			"ajax": "{{ url_for('ht_api.datatable_bulk') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -191,10 +191,10 @@
 
 		$("#bulktable").on("click", ".bulkLink", function(){
 			if ($(this).data("type") == "stacking") {
-				location.href = "/stacking";
+				location.href = "{{ url_for('ht_frontend.stacking') }}";
 			}
 			else if ($(this).data("type") == "multi") {
-				location.href = "/multifile";
+				location.href = "{{ url_for('ht_frontend.multifile') }}";
 			}			
 		});
 
@@ -224,15 +224,22 @@
 		}).on('mouseleave','.bulkname',  function(){
 			$(this).next().hide();
 		});
+		
+		const urlmap = new Map();
+		urlmap.set('remove', '{{ url_for('ht_api.hxtool_api_acquisition_bulk_remove') }}')
+		urlmap.set('stop', '{{ url_for('ht_api.hxtool_api_acquisition_bulk_stop') }}')
+		urlmap.set('stopdownload', '{{ url_for('ht_api.hxtool_api_acquisition_bulk_stopdownload') }}')
+		urlmap.set('download', '{{ url_for('ht_api.hxtool_api_acquisition_bulk_download') }}')
 
 		$("#bulktable").on("click", ".bulkAction", function(){
 			mytype = $(this).data("type");
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/acquisition/bulk/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+
+			hxtool_ajax_get_request(urlmap.get($(this).data("type")), "id=" + $(this).data("id"), function() {
 				if (mytype == "remove") {
 					myrow.fadeOut(200, function() {
 						bulk_datatable.row(myrow).remove().draw();
-						updateChartJS(chartjs_searches, "/api/v1/acquisition/bulk/chartjs_acquisitions?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+						updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_acquisition_bulk_chartjs_acquisitions') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 					})
 				}
 				else {
@@ -267,11 +274,11 @@
 
 				// Set the endpoint and IOC Data
 				if (mymode == "hxtool") {
-					myApiEndpoint = "/api/v1/acquisition/bulk/new/db";
+					myApiEndpoint = "{{ url_for('ht_api.hxtool_api_acquisition_bulk_new_db') }}";
 					data.append("bulkscript", $("#bulkScriptDb").data("id"));
 				}
 				else if (mymode == "file") {
-					myApiEndpoint = "/api/v1/acquisition/bulk/new/file";
+					myApiEndpoint = "{{ url_for('ht_api.hxtool_api_acquisition_bulk_new_file') }}";
 					$.each($('#bulkscript').prop('files'), function(key, value) {
 						data.append("bulkscript", value);
 					});
@@ -314,11 +321,11 @@
 										$(this).progressNoAnimate();
 									});
 								});
-								updateChartJS(chartjs_searches, "/api/v1/acquisition/bulk/chartjs_acquisitions?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+								updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_acquisition_bulk_chartjs_acquisitions') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 							}, 1000 );
 						}
 						else {
-							location.href = "/scheduler";
+							location.href = "{{ url_for('ht_frontend.scheduler_view') }}";
 						}
 					});
 				}
@@ -334,11 +341,11 @@
 										$(this).progressNoAnimate();
 									});
 								});
-								updateChartJS(chartjs_searches, "/api/v1/acquisition/bulk/chartjs_acquisitions?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+								updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_acquisition_bulk_chartjs_acquisitions') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 							}, 1000 );
 						}
 						else {
-							location.href = "/scheduler";
+							location.href = "{{ url_for('ht_frontend.scheduler_view') }}";
 						}
 					});
 				}
@@ -353,7 +360,7 @@
 
 		// ChartJS: Historical searches
 		var jsonData = $.ajax({
-			url: "/api/v1/acquisition/bulk/chartjs_acquisitions?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate,
+			url: "{{ url_for('ht_api.hxtool_api_acquisition_bulk_chartjs_acquisitions') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate,
 			dataType: 'json',
 		}).done(function (myChartData) {
 

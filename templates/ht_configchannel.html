@@ -7,7 +7,7 @@
 	$(document).ready(function() {
 
 		var ccc_datatable = $('#cccTable').DataTable( {
-			"ajax": "/api/v1/datatable_ccc",
+			"ajax": "{{ url_for('ht_api.datatable_ccc') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -53,14 +53,14 @@
 		$("#cccTable").on("click", ".cccAction", function() {
 			if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/ccc/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_ccc_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						ccc_datatable.row(myrow).remove().draw();
 					});
 				});
 			}
 			if ($(this).data("type") == "view") {
-				hxtool_ajax_get_request("/api/v1/ccc/get", "id=" + $(this).data("id"), function(cccResponse) {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_ccc_get') }}", "id=" + $(this).data("id"), function(cccResponse) {
 					mytemp = JSON.parse(cccResponse['api_response']);
 					myPrettyJSON = JSON.stringify(mytemp, undefined, 4);
 
@@ -106,7 +106,7 @@
 			var requestdata = new FormData();
 			requestdata.append("channel", JSON.stringify(myChannel));
 
-			hxtool_ajax_post_request("/api/v1/ccc/new", requestdata, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_ccc_new') }}", requestdata, function() {
 				ccc_datatable.ajax.reload();
 			});			
 			

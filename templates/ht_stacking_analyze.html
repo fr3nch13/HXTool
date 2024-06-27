@@ -7,7 +7,7 @@
 	$(document).ready(function() {
 
 		$("#backButton").click(function(){
-			location.href = "/stacking";
+			location.href = "{{ url_for('ht_frontend.stacking') }}";
 		});
 
 		$("#endpointViewDismiss").click(function(){
@@ -23,7 +23,7 @@
 		myid = getQueryParam('id');
 		$.ajax({
 				type: "GET",
-				url: "/api/v1/stacking/" + myid + "/results",
+				url: "{{ url_for('ht_api.stack_job_results') }}/" + myid,
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				success: function(r) {

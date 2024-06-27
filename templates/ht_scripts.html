@@ -36,7 +36,7 @@
 
 			data.append("scriptname", $("#scriptname").val());
 
-			hxtool_ajax_post_request("/api/v1/scripts/upload", data, function(data) {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_scripts_upload') }}", data, function(data) {
 				$("#scriptNewPopup").hide();
 				scriptTable.ajax.reload();
 			});
@@ -44,7 +44,7 @@
 
 		$("#scriptTable").on('click', '.script_remove', function() {
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/scripts/remove", "id=" + $(this).data("id"), function(mydata) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_scripts_remove') }}", "id=" + $(this).data("id"), function(mydata) {
 				myrow.fadeOut(200, function() {
 					scriptTable.row(myrow).remove().draw();
 				});
@@ -52,12 +52,12 @@
 		});
 
 		$("#scriptTable").on('click', '.script_download', function() {
-			location.href = "/api/v1/scripts/download?id=" + $(this).data("id");
+			location.href = "{{ url_for('ht_api.hxtool_api_scripts_download') }}?id=" + $(this).data("id");
 		});
 
 		var scriptTable = $('#scriptTable').DataTable( {
 			"ajax": {
-				"url": "/api/v1/datatable_scripts",
+				"url": "{{ url_for('ht_api.datatable_scripts') }}",
 				"dataSrc": ""
 			},
 			"paging":   false,
@@ -81,7 +81,7 @@
 				 width: "320px",
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display'){
-				 		//data = "<input type='button' data-script='" + row.script + "' value='view' id='view_" + data + "' class='tableActionButton viewbutton'><a href='/scripts?action=delete&id=" + data + "' class='tableActionButton'>delete</a>";
+				 		//data = "<input type='button' data-script='" + row.script + "' value='view' id='view_" + data + "' class='tableActionButton viewbutton'><a href='{{ url_for('ht_frontend.scripts') }}?action=delete&id=" + data + "' class='tableActionButton'>delete</a>";
 				 		data = '<button style="margin-right: 6px;" data-script="' + row.script + '" class="script_view fe-btn fe-btn--sm fe-btn--primary fe-btn--hxtool-main"> view <i class="fe-icon--right fas fa-eye"></i></button>';
 				 		data += '<button style="margin-right: 6px;" data-id="' + row.script_id + '" class="script_download fe-btn fe-btn--sm fe-btn--primary fe-btn--hxtool-main"> download <i class="fe-icon--right fas fa-download"></i></button>'
 				 		data += '<button style="margin-right: 6px;" data-id="' + row.script_id + '" class="script_remove fe-btn fe-btn--sm fe-btn--primary fe-btn--hxtool-main-remove"> remove <i class="fe-icon--right fas fa-trash"></i></button>';

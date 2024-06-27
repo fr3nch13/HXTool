@@ -6,7 +6,7 @@
 <script>
 	$(document).ready(function() {
 
-		hxtool_ajax_get_request("/api/v1/hostsets/list", "", function(setResponse) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hostsets_list') }}", "", function(setResponse) {
 			myHostSetResponse = JSON.parse(setResponse['api_response']);
 			myhostsets = {};
 			$.each(myHostSetResponse['data']['entries'], function( index, value ) {
@@ -14,7 +14,7 @@
 			});
 
 			stacking_datatable = $('#stackingTable').DataTable( {
-				"ajax": "/api/v1/datatable_stacking",
+				"ajax": "{{ url_for('ht_api.datatable_stacking') }}",
 				"paging":   false,
 				"ordering": false,
 				"info":     false,
@@ -102,18 +102,18 @@
 
 		$("#stackingTable").on("click", ".stackAction", function() {
 			if ($(this).data("type") == "analyze") {
-				location.href = "/stackinganalyze?id=" + $(this).data("id");
+				location.href = "{{ url_for('ht_frontend.stackinganalyze') }}?id=" + $(this).data("id");
 			}
 			else if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/stacking/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_stacking_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						stacking_datatable.row(myrow).remove().draw();
 					});
 				});
 			}
 			else if ($(this).data("type") == "stop") {
-				hxtool_ajax_get_request("/api/v1/stacking/stop", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_stacking_stop') }}", "id=" + $(this).data("id"), function() {
 					stacking_datatable.ajax.reload(function() {
 						$("div[id^='crate_']").each(function() {
 							$(this).progressNoAnimate();
@@ -126,7 +126,7 @@
 		$("#stackingNew").click(function() {
 			$("#stackingPopup").find(".fe-modal__body").html("");
 
-			hxtool_ajax_get_request("/api/v1/stacking/stacktypes", "", function(typeResponse) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_stacking_stacktypes') }}", "", function(typeResponse) {
 				myentries = [];
 				$.each(typeResponse, function( index, value ) {
 					myentries.push({
@@ -139,7 +139,7 @@
 				$("#stackingPopup").find(".fe-modal__body").append(generateDropDown(myentries[0]['elementText'], "stack_type", myentries[0]['elementId'], entries=myentries, "", ""));
 				$("#stackingPopup").find(".fe-modal__body").append("<br>");
 			
-				hxtool_ajax_get_request("/api/v1/hostsets/list", "", function(setResponse) {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_hostsets_list') }}", "", function(setResponse) {
 					myResponse = JSON.parse(setResponse['api_response']);
 					myhostentries = [];
 					$.each(myResponse['data']['entries'], function( index, value ) {
@@ -172,7 +172,7 @@
 			data.append("stack_type", $("#stack_type").data("id"));
 			data.append("stackhostset", $("#stackhostset").data("id"));
 
-			hxtool_ajax_post_request("/api/v1/stacking/new", data, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_stacking_new') }}", data, function() {
 				stacking_datatable.ajax.reload(function() {
 					$("div[id^='crate_']").each(function() {
 						$(this).progressNoAnimate();

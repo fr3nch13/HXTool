@@ -23,21 +23,21 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js/buttons.print.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jszip.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/datatables_parser.js') }}"></script>
-	<script type="text/javascript" src="/static/datetimepicker/moment.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='datetimepicker/moment.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='ChartJS/Chart.min.js') }}"></script>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buttons.dataTables.min.css') }}" />
-	<script type="text/javascript" src="/static/progress.js"></script>
-	<script type="text/javascript" src="/static/jquery.multi-select.js"></script>
-	<script type="text/javascript" src="/static/datetimepicker/daterangepicker.js"></script>
-	<script type="text/javascript" src="/static/hxtool-js/hxtool-doc-ready.js"></script>
-	<script type="text/javascript" src="/static/hxtool-js/hxtool-generic.js"></script>
-	<script type="text/javascript" src="/static/hxtool-js/hxtool-widgets.js"></script>
-	<link href="/static/fontawesome-free-5.7.2-web/css/all.css" rel="stylesheet">
-	<link href="/static/fe-fds/fds-dark.css" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="static/hxtool-css/hxtool-main.css">
-    <link rel="stylesheet" type="text/css" href="static/datetimepicker/daterangepicker.css">
-	<link rel="stylesheet" type="text/css" href="static/multi-select.css">
-	<link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
+	<script type="text/javascript" src="{{ url_for('static', filename='progress.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery.multi-select.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='datetimepicker/daterangepicker.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='hxtool-js/hxtool-doc-ready.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='hxtool-js/hxtool-generic.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='hxtool-js/hxtool-widgets.js') }}"></script>
+	<link href="{{ url_for('static', filename='fontawesome-free-5.7.2-web/css/all.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='fe-fds/fds-dark.css') }}" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hxtool-css/hxtool-main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datetimepicker/daterangepicker.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='multi-select.css') }}">
+	<link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" type="image/x-icon" />
 </head>
 <body>
 	<script>
@@ -118,7 +118,10 @@
 				$("#topnav_iocstreaming").hide();
 			}
 
-			hxtool_doc_ready();
+			hxtool_doc_ready(
+				'{{ url_for('ht_frontend.hosts') }}',
+				'{{ url_for('ht_frontend.logout') }}'
+			);
 
 		});
 	</script>
@@ -132,7 +135,7 @@
 	<!-- TOP NAV BAR -->
 	<header class="fe-top-nav fe-top-nav__topnav">
 		<div class="fe-top-nav__title fe-top-nav__bookend--left fe-top-nav__bookend">
-			<a class="fe-top-nav__home" routerlink="/">
+			<a class="fe-top-nav__home" routerlink="{{ url_for('ht_frontend.dashboard') }}">
 				<div class="fe-top-nav__title-brand">FireEye<sup>®</sup></div>
 				<div class="fe-top-nav__title-name">HXTool</div>
 			</a>
@@ -146,13 +149,13 @@
 						<i class="fas fa-chevron-down"></i>
 					</button>
 					<div class='hxtool_topnav_dropdown'>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/'>Main Dashboard</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/dashboard-agent'>Agent Dashboard</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/dashboard-av'>Antivirus Dashboard</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.dashboard') }}'>Main Dashboard</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.dashboardagent') }}'>Agent Dashboard</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.dashboardav') }}'>Antivirus Dashboard</button><br>
 					</div>
 				</li>
 				<li class="fe-top-nav__bar-nav-items">
-					<button class="hxtool_topnav_mainbutton fe-btn fe-btn--lg fe-btn--primary-link" data-link='/alert' aria-label="item 2">
+					<button class="hxtool_topnav_mainbutton fe-btn fe-btn--lg fe-btn--primary-link" data-link='{{ url_for('ht_frontend.alert') }}' aria-label="item 2">
 						<i class='fas fa-exclamation-triangle' aria-hidden='true'></i>
 						<span>alerts</span>
 					</button>
@@ -164,8 +167,8 @@
 						<i class="fas fa-chevron-down"></i>
 					</button>
 					<div class='hxtool_topnav_dropdown'>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/search'>OpenIOC search</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/openioc'>Manage OpenIOC indicators</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.search') }}'>OpenIOC search</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.openioc') }}'>Manage OpenIOC indicators</button><br>
 					</div>
 				</li>
 				<li class="fe-top-nav__bar-nav-items">
@@ -175,15 +178,15 @@
 						<i class="fas fa-chevron-down"></i>
 					</button>
 					<div class='hxtool_topnav_dropdown'>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/scriptbuilder'>script builder</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/scripts'>manage scripts</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/auditexplorer' id='topnav_auditexplorer'>audit explorer</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/auditmanager' id='topnav_manageaudits'>manage audits</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/acqs'>acquisitions</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/bulkacq'>bulk acquisitions</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/multifile'>multi-file acquisitions</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/stacking'>data stacking</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/taskprofile'>task profiles</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.scriptbuilder_view') }}'>script builder</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.scripts') }}'>manage scripts</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.auditexplorer') }}' id='topnav_auditexplorer'>audit explorer</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.auditmanager') }}' id='topnav_manageaudits'>manage audits</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.acqs') }}'>acquisitions</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.bulkacq_view') }}'>bulk acquisitions</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.multifile') }}'>multi-file acquisitions</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.stacking') }}'>data stacking</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.taskprofile') }}'>task profiles</button><br>
 					</div>
 				</li>
 				<li class="fe-top-nav__bar-nav-items">
@@ -194,12 +197,12 @@
 					</button>
 					<div class='hxtool_topnav_dropdown'>
 						<label class='hxtool_topnav_dropdown_divider fe-label'>Alerting</label><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/rtioc'>build rule</button><br>
-						<!--<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/indicatorqueue'>rule queue</button><br>-->
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/indicators'>manage rules</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/categories'>manage rule categories</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.rtioc') }}'>build rule</button><br>
+						<!--<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.indicatorsqueue') }}'>rule queue</button><br>-->
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.indicators') }}'>manage rules</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.categories') }}'>manage rule categories</button><br>
 						<label class='hxtool_topnav_dropdown_divider fe-label' id='topnav_iocstreaming_label'>Streaming</label><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/streaming_indicators' id='topnav_iocstreaming'>manage streaming rules</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.streaming_indicators') }}' id='topnav_iocstreaming'>manage streaming rules</button><br>
 					</div>
 				</li>
 				<li class="fe-top-nav__bar-nav-items">
@@ -209,9 +212,9 @@
 						<i class="fas fa-chevron-down"></i>
 					</button>
 					<div class='hxtool_topnav_dropdown'>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/channels'>custom configuration channels</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/scheduler'>scheduler</button><br>
-						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='/settings'>hxtool settings</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.channels') }}'>custom configuration channels</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.scheduler_view') }}'>scheduler</button><br>
+						<button class='hxtool_topnav_dropdown_child fe-btn fe-btn--lg fe-btn--primary-link' data-link='{{ url_for('ht_frontend.settings') }}'>hxtool settings</button><br>
 					</div>
 				</li>
 				<li class="fe-top-nav__bar-nav-items" id="fe-top-nav__bar-right-item">
@@ -227,7 +230,7 @@
 				<a aria-label="search in topnav" id="hxtool_topnavSearch" class="fe-top-nav__action-item" data-clicked='false' role="button" tabindex="0" aria-expanded="false">
 					<i class="fe-icon--center fas fa-search fa-2x"></i>
 				</a>
-				<a aria-label="info in topnav" class="fe-top-nav__action-item" href="/sysinfo" role="button" tabindex="0" aria-expanded="false">
+				<a aria-label="info in topnav" class="fe-top-nav__action-item" href="{{ url_for('ht_frontend.sysinfo') }}" role="button" tabindex="0" aria-expanded="false">
 					<i class="fe-icon--center fas fa-info-circle fa-2x"></i>
 				</a>
 				<a id="hxtoolLogout" aria-label="logout" class="fe-top-nav__action-item" role="button" tabindex="0" aria-expanded="false">

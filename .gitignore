@@ -1,0 +1,4 @@
+
+data/hxtool.db
+*.pyc
+/log/*

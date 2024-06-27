@@ -5,7 +5,7 @@ function collapse_all_dropdowns() {
 	});
 }
 
-function hxtool_doc_ready() { 
+function hxtool_doc_ready(uri_hostsearch, uri_logout) { 
 
 	/* Global stuff */
 
@@ -66,7 +66,7 @@ function hxtool_doc_ready() {
 	$("#hxtool_global_search").keypress(function (e) {
 		var key = e.which;
 		if(key == 13) {
-			location.href = "/hostsearch?q=" + $("#hxtool_global_search").val();
+			location.href = uri_hostsearch + $("#hxtool_global_search").val();
 		}
 	});
 
@@ -76,7 +76,7 @@ function hxtool_doc_ready() {
 	});
 
 	$("#hxtoolLogout").click(function(e) {
-		window.location.href = "/logout"
+		window.location.href = uri_logout
 		e.stopPropagation();
 	});
 

@@ -34,10 +34,10 @@
 					tfield = field;
 				}
 
-				$(".csvButton").data("url", "/api/v1/datatable/agentstatus/csv?pattern=" + label + "&field=" + tfield);
+				$(".csvButton").data("url", "{{ url_for('ht_api.datatable_agentstatus_csv') }}?pattern=" + label + "&field=" + tfield);
 
 				agentContentPopup_datatable = $('#agentContentTable').DataTable( {
-					"ajax": "/api/v1/datatable/agentstatus?pattern=" + label + "&field=" + tfield,
+					"ajax": "{{ url_for('ht_api.datatable_agentstatus') }}?pattern=" + label + "&field=" + tfield,
 					"paging":   false,
 					"ordering": false,
 					"info":     false,
@@ -57,7 +57,7 @@
 						{
 						 "targets": 0,
 						 render: function ( data, type, row, meta ) {
-							data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(row.DT_RowId) + '">' + data + '</a>';
+							data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(row.DT_RowId) + '">' + data + '</a>';
 							return(data);
 						 }
 						},
@@ -79,7 +79,7 @@
 
 			// ChartJS - Agent version
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=agent_version",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=agent_version",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -114,7 +114,7 @@
 
 			// ChartJS - Domain
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=domain",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=domain",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -149,7 +149,7 @@
 
 			// ChartJS - Timezone
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=timezone",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=timezone",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -184,7 +184,7 @@
 
 			// ChartJS - containenment state
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=containment_state",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=containment_state",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -219,7 +219,7 @@
 
 			// ChartJS - Containment queued
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=containment_queued",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=containment_queued",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -254,7 +254,7 @@
 
 			// ChartJS - containment software missing
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=containment_missing_software",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=containment_missing_software",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -289,7 +289,7 @@
 
 			// ChartJS - Reported clone
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=reported_clone",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=reported_clone",
 				dataType: 'json',
 			}).done(function (myChartData) {
 
@@ -324,7 +324,7 @@
 
 			// ChartJS - OS product
 			var jsonData = $.ajax({
-				url: "/api/v1/chartjs_agentstatus?field=os.product_name",
+				url: "{{ url_for('ht_api.chartjs_agentstatus') }}?field=os.product_name",
 				dataType: 'json',
 			}).done(function (myChartData) {
 

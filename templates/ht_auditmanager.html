@@ -7,7 +7,7 @@
 	$(document).ready(function() {
 
 		var auditTable = $('#auditTable').DataTable( {
-			"ajax": "/api/v1/auditmanager/getaudits",
+			"ajax": "{{ url_for('ht_api.hxtool_api_auditmanager_getaudits') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -65,10 +65,10 @@
 			myrow = $(this).closest("tr");
 
 			if (mytype == "explore") {
-				location.href = "/auditexplorer?id=" + $(this).data("id");
+				location.href = "{{ url_for('ht_frontend.auditexplorer') }}?id=" + $(this).data("id");
 			}
 			else if (mytype == "remove") {
-				hxtool_ajax_get_request("/api/v1/auditmanager/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_auditmanager_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						auditTable.row(myrow).remove().draw();
 					});

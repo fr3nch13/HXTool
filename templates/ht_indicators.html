@@ -33,11 +33,11 @@
 
 	$(document).ready(function() {
 
-		hxtool_ajax_get_request("/api/v1/indicator_category/get_edit_policies", "", function(myCategoryPolicies) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicator_category_get_edit_policies') }}", "", function(myCategoryPolicies) {
 			myEditPolicies = JSON.parse(myCategoryPolicies['api_response']);
 
 			ioc_datatable = $('#iocTable').DataTable( {
-				"ajax": "/api/v1/datatable_indicators",
+				"ajax": "{{ url_for('ht_api.datatable_indicators') }}",
 				"paging":   false,
 				"ordering": true,
 				"order": [[3,"asc"],[1,"asc"],[2,"desc"]],
@@ -110,7 +110,7 @@
 			$('div.dataTables_filter input').addClass("fe-input");
 			
 			// Render categories
-			hxtool_ajax_get_request("/api/v1/indicator_category/list", "", function(setResponse) {
+			hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicator_category_list') }}", "", function(setResponse) {
 				myCategoryResponse = JSON.parse(setResponse['api_response']);
 				mycats = [];
 				$.each(myCategoryResponse['data']['entries'], function( index, value ) {
@@ -129,21 +129,21 @@
 
 		$("#iocTable").on("click", ".iocAction", function() {
 			if ($(this).data("type") == "edit") {
-				location.href = "/rtioc?indicator=" + encodeURIComponent($(this).data("url"));
+				location.href = "{{ url_for('ht_frontend.rtioc') }}?indicator=" + encodeURIComponent($(this).data("url"));
 			}
 			if ($(this).data("type") == "clone") {
-				location.href = "/rtioc?indicator=" + encodeURIComponent($(this).data("url")) + "&clone=true";
+				location.href = "{{ url_for('ht_frontend.rtioc') }}?indicator=" + encodeURIComponent($(this).data("url")) + "&clone=true";
 			}
 			if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/indicators/remove", "url=" + encodeURIComponent($(this).data("url")), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicators_remove') }}", "url=" + encodeURIComponent($(this).data("url")), function() {
 					myrow.fadeOut(200, function() {
 						ioc_datatable.row(myrow).remove().draw();
 					});
 				});
 			}
 			if ($(this).data("type") == "view") {
-				hxtool_ajax_get_request("/api/v1/indicators/get/conditions", "uuid=" + $(this).data("id") + "&url=" + encodeURIComponent($(this).data("url")), function(myConditionsResponse) {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicators_get_conditions') }}", "uuid=" + $(this).data("id") + "&url=" + encodeURIComponent($(this).data("url")), function(myConditionsResponse) {
 					myConditions = JSON.parse(myConditionsResponse['api_response']);
 
 					// First empty the container
@@ -188,7 +188,7 @@
 			data.append('category', $('#ruleImportCategory').data("id"));
 			data.append('platform', $('#ruleImportPlatform').data("id"));
 			
-			hxtool_ajax_post_request("/api/v1/indicators/import", data, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_indicators_import') }}", data, function() {
 				ioc_datatable.ajax.reload();
 			});
 
@@ -213,7 +213,7 @@
 			$.ajax
 			({
 				type: 'POST',
-				url: '/api/v1/indicators/export',
+				url: '{{ url_for('ht_api.hxtool_api_indicators_export') }}',
 				contentType: 'application/json',
 				xhrFields: { responseType: 'blob' },
 				processData: false,
@@ -242,7 +242,7 @@
 		});
 
 		$("#createButton").click(function() {
-			location.href = "/rtioc";
+			location.href = "{{ url_for('ht_frontend.rtioc') }}";
 		});
 		
 	});

@@ -11,7 +11,7 @@
 		$('#result_icon').addClass("fa-spinner");
 		$('#result_icon').addClass("fa-spin");
 
-		$.getJSON('/api/v1/auditviewer/query?q=' + query, function(myResponse) {
+		$.getJSON('{{ url_for('ht_api.hxtool_api_auditviewer_query') }}?q=' + query, function(myResponse) {
 
 			$('#result_icon').removeClass("fa-spin");
 			$('#result_icon').removeClass("fa-spinner");

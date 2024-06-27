@@ -13,7 +13,7 @@
 
 		$.fn.dataTable.ext.errMode = 'none';
 		var es_datatable = $('#esTable').DataTable( {
-			"ajax": "/api/v1/datatable_es",
+			"ajax": "{{ url_for('ht_api.datatable_es') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -62,7 +62,7 @@
 				 "width": "50px",
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display') {
-				 		data = '<a style="margin: 0;" class="fe-radio__label" href="/searchresult?id=' + row.DT_RowId + '">' + data + '</a>';
+				 		data = '<a style="margin: 0;" class="fe-radio__label" href="{{ url_for('ht_frontend.searchresult') }}?id=' + row.DT_RowId + '">' + data + '</a>';
 				 	}
 				 	return data;
 				 }
@@ -71,7 +71,7 @@
 				 "targets": [ 2 ],
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display') {
-				 		data = '<span class="searchname"><a style="margin: 0;" class="fe-radio__label" href="/searchresult?id=' + row.DT_RowId + '">' + data + '</a></span>';
+				 		data = '<span class="searchname"><a style="margin: 0;" class="fe-radio__label" href="{{ url_for('ht_frontend.searchresult') }}?id=' + row.DT_RowId + '">' + data + '</a></span>';
 				 		data += '<div style="display: none; position: absolute; border: 1px solid rgba(15, 184, 220, 0.4); padding: 15px; background: #2c3138; border-radius: 3px;">';
 				 		data += '<h5>Underlying bulk acquisition</h5>';
 				 		data += '<table class="hxtool_table"><thead>';
@@ -172,11 +172,17 @@
 		$("#esTable").on("click", ".esAction", function(){
 			mytype = $(this).data("type");
 			myrow = $(this).closest("tr");
-			hxtool_ajax_get_request("/api/v1/enterprise_search/" + $(this).data("type"), "id=" + $(this).data("id"), function() {
+
+			const urlMap = new Map();
+			urlMap.set('stop', '{{ url_for('ht_api.hxtool_api_enterprise_search_stop') }}')
+			urlMap.set('remove', '{{ url_for('ht_api.hxtool_api_enterprise_search_remove') }}')
+			
+
+			hxtool_ajax_get_request(urlMap.get($(this).data("type")), "id=" + $(this).data("id"), function() {
 				if (mytype == "remove") {
 					myrow.fadeOut(200, function() {
 						es_datatable.row(myrow).remove().draw();
-						updateChartJS(chartjs_searches, "/api/v1/enterprise_search/chartjs_searches?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+						updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_enterprise_search_chartjs_searches') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 					})
 				}
 				else {
@@ -202,11 +208,11 @@
 			
 			// Set the endpoint and IOC Data
 			if (mymode == "hxtool") {
-				myApiEndpoint = "/api/v1/enterprise_search/new/db";
+				myApiEndpoint = "{{ url_for('ht_api.hxtool_api_enterprise_search_new_db') }}";
 				data.append("ioc", $("#esIocDb").data("id"));
 			}
 			else if (mymode == "file") {
-				myApiEndpoint = "/api/v1/enterprise_search/new/file";
+				myApiEndpoint = "{{ url_for('ht_api.hxtool_api_enterprise_search_new_file') }}";
 				$.each($('#esIocFile').prop('files'), function(key, value) {
 					data.append("ioc", value);
 				});
@@ -246,11 +252,11 @@
 									$(this).progressNoAnimate();
 								});
 							});
-							updateChartJS(chartjs_searches, "/api/v1/enterprise_search/chartjs_searches?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+							updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_enterprise_search_chartjs_searches') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 						}, 1000 );
 					}
 					else {
-						location.href = "/scheduler";
+						location.href = "{{ url_for('ht_frontend.scheduler_view') }}";
 					}
 				});
 			}
@@ -263,11 +269,11 @@
 									$(this).progressNoAnimate();
 								});
 							});
-							updateChartJS(chartjs_searches, "/api/v1/enterprise_search/chartjs_searches?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
+							updateChartJS(chartjs_searches, "{{ url_for('ht_api.hxtool_api_enterprise_search_chartjs_searches') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate);
 						}, 1000 );
 					}
 					else {
-						location.href = "/scheduler";
+						location.href = "{{ url_for('ht_frontend.scheduler_view') }}";
 					}
 				});
 			}
@@ -281,7 +287,7 @@
 
 		// ChartJS: Historical searches
 		var jsonData = $.ajax({
-			url: "/api/v1/enterprise_search/chartjs_searches?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate,
+			url: "{{ url_for('ht_api.hxtool_api_enterprise_search_chartjs_searches') }}?startDate=" + getHistoricDate(7) + "&endDate=" + currentDate,
 			dataType: 'json',
 		}).done(function (myChartData) {
 

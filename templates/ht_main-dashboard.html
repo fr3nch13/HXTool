@@ -5,10 +5,10 @@
 <script>
 
 	function refreshEverything(currentDate, row1_cell3_datatable, row2_cell1_datatable) {
-		updateChartJS(chartjs_ap, "/api/v1/chartjs_hosts_initial_agent_checkin?startDate=" + getHistoricDate($("#row1_cell2_select").data("id")) + "&endDate=" + currentDate);
-		updateChartJS(chartjs_ih, "/api/v1/chartjs_inactive_hosts_per_hostset?seconds=" + $("#row1_cell1_select").data("id"));
-		updateChartJS(chartjs_ad, "/api/v1/chartjs_events_distribution?startDate=" + getHistoricDate($("#row2_cell2_select").data("id")) + "&endDate=" + currentDate);
-		updateChartJS(chartjs_et, "/api/v1/chartjs_events_timeline?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val());
+		updateChartJS(chartjs_ap, "{{ url_for('ht_api.chartjs_hosts_initial_agent_checkin') }}?startDate=" + getHistoricDate($("#row1_cell2_select").data("id")) + "&endDate=" + currentDate);
+		updateChartJS(chartjs_ih, "{{ url_for('ht_api.chartjs_inactive_hosts_per_hostset') }}?seconds=" + $("#row1_cell1_select").data("id"));
+		updateChartJS(chartjs_ad, "{{ url_for('ht_api.chartjs_events_distribution') }}?startDate=" + getHistoricDate($("#row2_cell2_select").data("id")) + "&endDate=" + currentDate);
+		updateChartJS(chartjs_et, "{{ url_for('ht_api.chartjs_events_timeline') }}?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val());
 		row1_cell3_datatable.ajax.reload();
 		row2_cell1_datatable.ajax.reload();
 	}
@@ -40,15 +40,15 @@
 
 		// When the user changes graph settings
 		$(".row1_cell2-item").click(function() {
-			updateChartJS(chartjs_ap, "/api/v1/chartjs_hosts_initial_agent_checkin?startDate=" + getHistoricDate($(this).find("span").next().data("id")) + "&endDate=" + currentDate);
+			updateChartJS(chartjs_ap, "{{ url_for('ht_api.chartjs_hosts_initial_agent_checkin') }}?startDate=" + getHistoricDate($(this).find("span").next().data("id")) + "&endDate=" + currentDate);
 		});
 
 		$(".row1_cell1-item").click(function() {
-			updateChartJS(chartjs_ih, "/api/v1/chartjs_inactive_hosts_per_hostset?seconds=" + $(this).find("span").next().data("id"));
+			updateChartJS(chartjs_ih, "{{ url_for('ht_api.chartjs_inactive_hosts_per_hostset') }}?seconds=" + $(this).find("span").next().data("id"));
 		});
 
 		$(".row2_cell2-item").click(function() {
-			updateChartJS(chartjs_ad, "/api/v1/chartjs_events_distribution?startDate=" + getHistoricDate($(this).find("span").next().data("id")) + "&endDate=" + currentDate);
+			updateChartJS(chartjs_ad, "{{ url_for('ht_api.chartjs_events_distribution') }}?startDate=" + getHistoricDate($(this).find("span").next().data("id")) + "&endDate=" + currentDate);
 		});
 
 		$("button[id^='row3_cell1_nav_']").click(function() {
@@ -60,13 +60,13 @@
 		});
 
 		$("#row3_cell1_refresh").click(function() {
-			updateChartJS(chartjs_et, "/api/v1/chartjs_events_timeline?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val());
+			updateChartJS(chartjs_et, "{{ url_for('ht_api.chartjs_events_timeline') }}?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val());
 		});
 
 		// START: Charts
 		// ChartJS: Agent provisioning status
 		var jsonData = $.ajax({
-			url: "/api/v1/chartjs_hosts_initial_agent_checkin?startDate=" + getHistoricDate($("#row1_cell2_select").data("id")) + "&endDate=" + currentDate,
+			url: "{{ url_for('ht_api.chartjs_hosts_initial_agent_checkin') }}?startDate=" + getHistoricDate($("#row1_cell2_select").data("id")) + "&endDate=" + currentDate,
 			dataType: 'json',
 		}).done(function (myChartData) {
 
@@ -128,7 +128,7 @@
 
 		// ChartJS: Alerts timeline
 		var jsonData = $.ajax({
-			url: "/api/v1/chartjs_events_timeline?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val(),
+			url: "{{ url_for('ht_api.chartjs_events_timeline') }}?startDate=" + $("#row3_cell1_from").val() + "&endDate=" + $("#row3_cell1_to").val(),
 			dataType: 'json',
 		}).done(function (myChartData) {
 
@@ -189,7 +189,7 @@
 
 		// ChartJS: alert distribution
 		var jsonData = $.ajax({
-			url: "/api/v1/chartjs_events_distribution?startDate=" + getHistoricDate($("#row2_cell2_select").data("id")) + "&endDate=" + currentDate,
+			url: "{{ url_for('ht_api.chartjs_events_distribution') }}?startDate=" + getHistoricDate($("#row2_cell2_select").data("id")) + "&endDate=" + currentDate,
 			dataType: 'json',
 		}).done(function (myChartData) {
 
@@ -249,7 +249,7 @@
 
 		// ChartJS: inactive hosts
 		var jsonData = $.ajax({
-			url: "/api/v1/chartjs_inactive_hosts_per_hostset?seconds=" + $("#row1_cell1_select").data("id"),
+			url: "{{ url_for('ht_api.chartjs_inactive_hosts_per_hostset') }}?seconds=" + $("#row1_cell1_select").data("id"),
 			dataType: 'json',
 		}).done(function (myChartData) {
 
@@ -312,7 +312,7 @@
 		// Host with the most alerts
 		$.fn.dataTable.ext.errMode = 'none';
 		var row1_cell3_datatable = $('#row1_cell3_table').DataTable( {
-			"ajax": "/api/v1/datatable_hosts_with_alerts",
+			"ajax": "{{ url_for('ht_api.datatable_hosts_with_alerts') }}",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -327,7 +327,7 @@
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display'){
 				 		myArr = data.split("___");
-				 		data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(myArr[1]) + '">' + myArr[0] + '</a>';
+				 		data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(myArr[1]) + '">' + myArr[0] + '</a>';
 				 	}
 				 	return data;
 				 }
@@ -340,7 +340,7 @@
 		// Last 10 alerts
 		$.fn.dataTable.ext.errMode = 'none';
 		var row2_cell1_datatable = $('#row2_cell1_table').DataTable( {
-			"ajax": "/api/v1/datatable_alerts?limit=10",
+			"ajax": "{{ url_for('ht_api.datatable_alerts') }}?limit=10",
 			"paging":   false,
 			"ordering": false,
 			"info":     false,
@@ -360,7 +360,7 @@
 				 render: function ( data, type, row, meta ) {
 				 	if(type === 'display'){
 				 		myArr = data.split("___");
-				 		data = '<a class="hostLink" href="/hostview?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
+				 		data = '<a class="hostLink" href="{{ url_for('ht_frontend.host_view') }}?host=' + encodeURIComponent(myArr[1]) + '&alertid=' + encodeURIComponent(myArr[2]) + '">' + myArr[0] + '</a>';
 				 	}
 				 	return data;
 				 }

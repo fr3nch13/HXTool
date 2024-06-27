@@ -33,11 +33,11 @@
 
 	$(document).ready(function() {
 
-		hxtool_ajax_get_request("/api/v1/indicator_category/get_edit_policies", "", function(myCategoryPolicies) {
+		hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_streaming_indicator_category_get_edit_policies') }}", "", function(myCategoryPolicies) {
 			myEditPolicies = JSON.parse(myCategoryPolicies['api_response']);
 
 			ioc_datatable = $('#iocTable').DataTable( {
-				"ajax": "/api/v1/datatable_indicatorqueue",
+				"ajax": "{{ url_for('ht_api.datatable_indicatorqueue') }}",
 				"paging":   false,
 				"ordering": false,
 				"info":     false,
@@ -160,28 +160,28 @@
 
 			if ($(this).data("type") == "approve") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/indicatorqueue/approve", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicatorqueue_approve') }}", "id=" + $(this).data("id"), function() {
 					ioc_datatable.ajax.reload();
 				});
 			}
 
 			if ($(this).data("type") == "deny") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/indicatorqueue/deny", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicatorqueue_deny') }}", "id=" + $(this).data("id"), function() {
 					ioc_datatable.ajax.reload();
 				});
 			}
 
 			if ($(this).data("type") == "remove") {
 				myrow = $(this).closest("tr");
-				hxtool_ajax_get_request("/api/v1/indicatorqueue/remove", "id=" + $(this).data("id"), function() {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicatorqueue_remove') }}", "id=" + $(this).data("id"), function() {
 					myrow.fadeOut(200, function() {
 						ioc_datatable.row(myrow).remove().draw();
 					});
 				});
 			}
 			if ($(this).data("type") == "view") {
-				hxtool_ajax_get_request("/api/v1/indicatorqueue/view", "id=" + $(this).data("id"), function(myRule) {
+				hxtool_ajax_get_request("{{ url_for('ht_api.hxtool_api_indicatorqueue_view') }}", "id=" + $(this).data("id"), function(myRule) {
 					
 					// First empty the container
 					$("#ruleViewPopup").find(".fe-modal__body").html("");
@@ -225,7 +225,7 @@
 				data.append("ruleImport", value);
 			});
 
-			hxtool_ajax_post_request("/api/v1/indicatorqueue/import", data, function() {
+			hxtool_ajax_post_request("{{ url_for('ht_api.hxtool_api_indicatorqueue_import') }}", data, function() {
 				ioc_datatable.ajax.reload();
 			});
 
@@ -246,7 +246,7 @@
 				}
 
 			});
-			location.href = "/api/v1/indicators/export?indicators=" + JSON.stringify(myExports);
+			location.href = "{{ url_for('ht_api.hxtool_api_indicators_export') }}?indicators=" + JSON.stringify(myExports);
 		});
 	
 	});

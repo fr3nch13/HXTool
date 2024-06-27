@@ -298,12 +298,12 @@
 				$.ajax
 				({
 					type: "POST",
-					url: '/api/v1/scripts/builder',
+					url: '{{ url_for('ht_api.hxtool_api_scripts_builder') }}',
 					dataType: 'json',
 					contentType: 'application/json',
 					data: JSON.stringify(myData, null, 4),
 					success: function () {
-						window.location.href = "/scripts";
+						window.location.href = "{{ url_for('static') }}/scripts";
 					},
 					error: function (xhr, status) {
 						$("#hxtoolMessageBody").html(JSON.stringify(xhr['responseText']));
